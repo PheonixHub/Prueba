@@ -564,4 +564,7 @@ MinButton.MouseButton1Click:Connect(function()
     TabPanel.Visible = not isMinimized
     ContentPanel.Visible = not isMinimized
     statsPanel.Visible = not isMinimized and (currentTab == "Stats" or buttonStates["Stats_Check Stats"])
+    if getgenv().AutoKillGUI then
+        getgenv().AutoKillGUI.Visible = not isMinimized
+    end
 end)
