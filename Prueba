@@ -446,125 +446,69 @@ if name == "Auto Punch" then
              if func then func() end
          end
 
-          if name == "Anti AFK" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Anti-AFK-by-ALEJANDRO-/refs/heads/main/Anti%20AFK", true))
-             if func then func() end
-         end
-end)
+if name == "Auto Kill Players" then
+    getgenv().SelectedTargets = getgenv().SelectedTargets or {}
+    getgenv().AutoKillGUI = getgenv().AutoKillGUI or nil
+    getgenv().AutoKillLoop = getgenv().AutoKillLoop or nil
 
-        table.insert(contentButtons, container)
-        y = y + 28
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local function getHand()
+        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        return char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
     end
+
+    local function startAutoKillLoop()
+        if getgenv().AutoKillLoop then return end
+        getgenv().AutoKillLoop = true
+        task.spawn(function()
+            while getgenv().AutoKillLoop do
+                task.wait(0.08)
+                local hand = getHand()
+                if hand and hand:IsDescendantOf(workspace) then
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and table.find(getgenv().SelectedTargets, player) then
+                            local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                            if root and root:IsDescendantOf(workspace) then
+                                for _ = 1, 2 do
+                                    firetouchinterest(hand, root, 0)
+                                    task.wait(0.01)
+                                    firetouchinterest(hand, root, 1)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
     end
-end
 
--- Crear pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as
-local x = 0
-for _, name in ipairs(tabs) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 96, 0, 25)
-    btn.Position = UDim2.new(0, x, 0, 0)
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.Parent = TabPanel
-    btn.MouseButton1Click:Connect(function() switchTab(name) end)
-    tabButtons[name] = btn
-    x = x + 100
-end
-
-
--- Panel adicional para contador personal en Stats
-local personalStatsPanel = Instance.new("Frame")
-personalStatsPanel.Size = UDim2.new(0, 195, 0, 100)
-personalStatsPanel.Position = UDim2.new(0, 10, 0, 40 + (#(contentByTab["Stats"]) * 28))
-personalStatsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-personalStatsPanel.BackgroundTransparency = 0.2
-personalStatsPanel.Visible = false
-personalStatsPanel.Parent = ContentPanel
-
-local tiempoLabel = Instance.new("TextLabel")
-tiempoLabel.Size = UDim2.new(1, -10, 0, 20)
-tiempoLabel.Position = UDim2.new(0, 5, 0, 5)
-tiempoLabel.BackgroundTransparency = 1
-tiempoLabel.TextColor3 = Color3.new(1, 1, 1)
-tiempoLabel.Font = Enum.Font.SourceSansBold
-tiempoLabel.TextSize = 16
-tiempoLabel.TextXAlignment = Enum.TextXAlignment.Left
-tiempoLabel.Parent = personalStatsPanel
-
-local fuerzaLabel = tiempoLabel:Clone()
-fuerzaLabel.Position = UDim2.new(0, 5, 0, 28)
-fuerzaLabel.Parent = personalStatsPanel
-
-local durabilidadLabel = tiempoLabel:Clone()
-durabilidadLabel.Position = UDim2.new(0, 5, 0, 51)
-durabilidadLabel.Parent = personalStatsPanel
-
-local renacimientosLabel = tiempoLabel:Clone()
-renacimientosLabel.Position = UDim2.new(0, 5, 0, 74)
-renacimientosLabel.Parent = personalStatsPanel
-
-local player = game:GetService("Players").LocalPlayer
-local RunService = game:GetService("RunService")
-
-local function getStat(name)
-	local stats = player:FindFirstChild("leaderstats") or player:FindFirstChild("PlayerStats")
-	local stat = stats and stats:FindFirstChild(name)
-	return stat or player:FindFirstChild(name)
-end
-
-local strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
-while not (strengthStat and durabilityStat and rebirthStat) do
-	RunService.RenderStepped:Wait()
-	strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
-end
-
-local startTime = tick()
-local startStrength = strengthStat.Value
-local startDurability = durabilityStat.Value
-local startRebirths = rebirthStat.Value
-
-RunService.RenderStepped:Connect(function()
-	if not personalStatsPanel.Visible then return end
-
-	local now = tick()
-	local elapsed = now - startTime
-	local h = math.floor(elapsed / 3600)
-	local m = math.floor((elapsed % 3600) / 60)
-	local s = math.floor(elapsed % 60)
-
-	local fuerza = strengthStat.Value - startStrength
-	local dura = durabilityStat.Value - startDurability
-	local rebirths = rebirthStat.Value - startRebirths
-
-	tiempoLabel.Text = string.format("Tiempo: %02d:%02d:%02d", h, m, s)
-	fuerzaLabel.Text = "Fuerza ganada: " .. abreviarNumero(fuerza)
-	durabilidadLabel.Text = "Durabilidad ganada: " .. abreviarNumero(dura)
-	renacimientosLabel.Text = "Renacimientos ganados: " .. tostring(rebirths)
-end)
-
--- Mostrar solo si estÃƒÂ¡s en pestaÃƒÂ±a "Stats"
-local originalSwitchTab = switchTab
-switchTab = function(tabName)
-	originalSwitchTab(tabName)
-	personalStatsPanel.Visible = (tabName == "Stats")
-end
--- Activar primera pestaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a
-switchTab(lastTab)
--- Minimizar estilo con tamaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±o y ocultar contenido
-local fullHeight = 400
-local minimizedHeight = 25
-local isMinimized = false
-
-MinButton.MouseButton1Click:Connect(function()
-    isMinimized = not isMinimized
-    MinButton.Text = isMinimized and "+" or "-"
-    MainFrame.Size = UDim2.new(0, 700, 0, isMinimized and minimizedHeight or fullHeight)
-    TabPanel.Visible = not isMinimized
-    ContentPanel.Visible = not isMinimized
-    statsPanel.Visible = not isMinimized and (currentTab == "Stats" or buttonStates["Stats_Check Stats"])
     if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI.Visible = not isMinimized
+        getgenv().AutoKillGUI:Destroy()
+        getgenv().AutoKillGUI = nil
+        getgenv().AutoKillLoop = false
+        print("ðŸ›‘ Panel AutoKill cerrado")
+        return
     end
-end)
+
+    print("â˜ ï¸ Panel AutoKill ACTIVADO")
+
+    local gui = Instance.new("ScrollingFrame")
+    gui.Name = "AutoKillGUI"
+    gui.Position = UDim2.new(0, 300, 0, 55)
+    gui.Size = UDim2.new(0, 300, 0, 300)
+    gui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    gui.BorderSizePixel = 0
+    gui.ScrollBarThickness = 6
+    gui.CanvasSize = UDim2.new(0, 0, 0, 0)
+    gui.Visible = true
+    gui.Parent = MainFrame
+
+    local layout = Instance.new("UIListLayout", gui)
+    layout.Padding = UDim.new(0, 5)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+
+    local function updatePlayerList()
+        for _, child in ipairs(gui:GetChildren())
