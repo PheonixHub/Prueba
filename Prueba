@@ -80,7 +80,7 @@ local currentTab = nil
 local tabButtons = {}
 local contentButtons = {}
 
--- Panel de pestaÃƒÆ’Ã‚Â±as adaptado
+-- Panel de pestaÃƒÂ±as adaptado
 local TabPanel = Instance.new("Frame")
 TabPanel.Size = UDim2.new(1, 0, 0, 30)
 TabPanel.Position = UDim2.new(0, 0, 0, 30)
@@ -115,7 +115,7 @@ ContentPanel.Position = UDim2.new(0, 0, 0, 55)
 ContentPanel.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
 ContentPanel.Parent = MainFrame
 
--- Panel de estadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas integrado (600x300 dentro del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº)
+-- Panel de estadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas integrado (600x300 dentro del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº)
 local statsPanel = Instance.new("ScrollingFrame")
 statsPanel.Position = UDim2.new(0, 220, 0, 55)
 statsPanel.Size = UDim2.new(0, 380, 1, -65)
@@ -154,7 +154,7 @@ local function updateLine(player, strength, durability, rebirths)
 end
 
 
--- FunciÃƒÂ³n para abreviar nÃƒÂºmeros
+-- FunciÃ³n para abreviar nÃºmeros
 local function abreviarNumero(num)
 	local abreviaciones = {
 		{valor = 1e15, sufijo = "Qa"},
@@ -171,7 +171,7 @@ local function abreviarNumero(num)
 	return tostring(num or "0")
 end
 
--- Actualizar lÃƒÂ­nea con fuerza/durabilidad abreviada
+-- Actualizar lÃ­nea con fuerza/durabilidad abreviada
 local function updateLine(player, strength, durability, rebirths)
     if not playerLines[player] then
         local label = Instance.new("TextLabel")
@@ -211,15 +211,15 @@ Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
--- AnimaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n del indicador
+-- AnimaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n del indicador
 local function animateIndicator(indicator, isActive)
     local goalColor = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 50, 50)
-    local goalText = isActive and "âœ“" or "X"
+    local goalText = isActive and "✓" or "X"
     indicator.Text = goalText
     TweenService:Create(indicator, TweenInfo.new(0.25), {TextColor3 = goalColor}):Play()
 end
 
--- Cambiar de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
+-- Cambiar de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
 local function switchTab(tabName)
     if currentTab == tabName then return end
     currentTab = tabName
@@ -488,11 +488,11 @@ if name == "Auto Kill Players" then
         getgenv().AutoKillGUI:Destroy()
         getgenv().AutoKillGUI = nil
         getgenv().AutoKillLoop = false
-        print("ðŸ›‘ Panel AutoKill cerrado")
+        print("🛑 Panel AutoKill cerrado")
         return
     end
 
-    print("â˜ ï¸ Panel AutoKill ACTIVADO")
+    print("☠️ Panel AutoKill ACTIVADO")
 
     local gui = Instance.new("ScrollingFrame")
     gui.Name = "AutoKillGUI"
@@ -511,4 +511,345 @@ if name == "Auto Kill Players" then
 
 
     local function updatePlayerList()
-        for _, child in ipairs(gui:GetChildren())
+        for _, child in ipairs(gui:GetChildren()) do
+            if child:IsA("TextButton") then
+                child:Destroy()
+            end
+        end
+
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local button = Instance.new("TextButton", gui)
+                button.Size = UDim2.new(1, 0, 0, 25)
+                button.Text = player.DisplayName
+                button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                button.TextColor3 = Color3.new(1, 1, 1)
+                button.Font = Enum.Font.SourceSans
+                button.TextSize = 18
+
+                if table.find(getgenv().SelectedTargets, player) then
+                    button.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+                end
+
+                button.MouseButton1Click:Connect(function()
+                    local found = table.find(getgenv().SelectedTargets, player)
+                    if found then
+                        table.remove(getgenv().SelectedTargets, found)
+                        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                    else
+                        table.insert(getgenv().SelectedTargets, player)
+                        button.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+                    end
+                end)
+            end
+        end
+
+        gui.CanvasSize = UDim2.new(0, 0, 0, #Players:GetPlayers() * 30)
+    end
+
+    updatePlayerList()
+    task.spawn(function()
+        while gui and gui.Parent do
+            updatePlayerList()
+            task.wait(5)
+        end
+    end)
+
+    Players.PlayerAdded:Connect(updatePlayerList)
+    Players.PlayerRemoving:Connect(updatePlayerList)
+
+    getgenv().AutoKillGUI = gui
+    startAutoKillLoop()
+end
+
+  -- Este es el fragmento actualizado con soporte para minimización del panel de espectador
+-- Se debe incluir esto dentro del bloque del botón "Espectear"
+
+if name == "Espectear" then
+    if _G.SpectatePanel and _G.SpectatePanel.Parent then
+        _G.SpectatePanel:Destroy()
+        _G.SpectatePanel = nil
+        return
+    end
+
+    local Camera = workspace.CurrentCamera
+    local currentlySpectating = nil
+
+    local SpectatePanel = Instance.new("Frame")
+    SpectatePanel.Size = UDim2.new(0, 280, 0, 300)
+    SpectatePanel.Position = UDim2.new(0, 215, 0, 55)
+    SpectatePanel.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    SpectatePanel.BorderSizePixel = 0
+    SpectatePanel.Visible = true
+    SpectatePanel.Parent = MainFrame
+    Instance.new("UICorner", SpectatePanel)
+    _G.SpectatePanel = SpectatePanel
+
+    local ScrollingFrame = Instance.new("ScrollingFrame")
+    ScrollingFrame.Size = UDim2.new(1, -20, 1, -20)
+    ScrollingFrame.Position = UDim2.new(0, 10, 0, 10)
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    ScrollingFrame.BackgroundTransparency = 1
+    ScrollingFrame.BorderSizePixel = 0
+    ScrollingFrame.ScrollBarThickness = 6
+    ScrollingFrame.Parent = SpectatePanel
+
+    local UIListLayout = Instance.new("UIListLayout", ScrollingFrame)
+    UIListLayout.Padding = UDim.new(0, 6)
+    UIListLayout.SortOrder = Enum.SortOrder.Name
+    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+    end)
+
+    local buttons = {}
+    local function createButton(player)
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, 0, 0, 36)
+        button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+        button.TextColor3 = Color3.new(1, 1, 1)
+        button.Font = Enum.Font.Gotham
+        button.TextSize = 14
+        button.Text = player.DisplayName
+        button.BorderSizePixel = 0
+        button.AutoButtonColor = false
+        Instance.new("UICorner", button)
+
+        button.MouseEnter:Connect(function()
+            button.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
+        end)
+        button.MouseLeave:Connect(function()
+            button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+        end)
+
+        button.MouseButton1Click:Connect(function()
+            currentlySpectating = player
+        end)
+
+        button.Parent = ScrollingFrame
+        buttons[player] = button
+    end
+
+    local function removeButton(player)
+        if buttons[player] then
+            buttons[player]:Destroy()
+            buttons[player] = nil
+        end
+    end
+
+    local function createReturnButton()
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, 0, 0, 36)
+        button.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+        button.TextColor3 = Color3.new(1, 1, 1)
+        button.Font = Enum.Font.GothamBold
+        button.TextSize = 14
+        button.Text = "↩ Volver a mí"
+        button.BorderSizePixel = 0
+        button.AutoButtonColor = false
+        Instance.new("UICorner", button)
+
+        button.MouseEnter:Connect(function()
+            button.BackgroundColor3 = Color3.fromRGB(100, 80, 80)
+        end)
+        button.MouseLeave:Connect(function()
+            button.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+        end)
+
+        button.MouseButton1Click:Connect(function()
+            currentlySpectating = nil
+            if LocalPlayer.Character then
+                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if hum then
+                    Camera.CameraSubject = hum
+                end
+            end
+        end)
+
+        button.Parent = ScrollingFrame
+    end
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            createButton(player)
+        end
+    end
+    createReturnButton()
+
+    Players.PlayerAdded:Connect(function(player)
+        if player ~= LocalPlayer then
+            createButton(player)
+        end
+    end)
+    Players.PlayerRemoving:Connect(function(player)
+        removeButton(player)
+        if currentlySpectating == player then
+            currentlySpectating = nil
+        end
+    end)
+
+    RunService.RenderStepped:Connect(function()
+        if currentlySpectating and currentlySpectating.Character then
+            local hum = currentlySpectating.Character:FindFirstChild("Humanoid")
+            if hum and Camera.CameraSubject ~= hum then
+                Camera.CameraSubject = hum
+            end
+        end
+    end)
+
+    Players.PlayerAdded:Connect(function(player)
+        if player == currentlySpectating then
+            player.CharacterAdded:Connect(function(char)
+                local hum = char:WaitForChild("Humanoid", 5)
+                if hum then
+                    Camera.CameraSubject = hum
+                end
+            end)
+        end
+    end)
+
+    LocalPlayer.CharacterAdded:Connect(function()
+        task.wait(1)
+        if currentlySpectating then
+            local char = currentlySpectating.Character
+            if char then
+                local hum = char:FindFirstChild("Humanoid")
+                if hum then
+                    Camera.CameraSubject = hum
+                end
+            end
+        end
+    end)
+end
+
+-- Y en el botón de minimizar, agrega esta línea para ocultar el panel si existe:
+MinButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    MinButton.Text = isMinimized and "+" or "-"
+    MainFrame.Size = UDim2.new(0, 700, 0, isMinimized and minimizedHeight or fullHeight)
+    TabPanel.Visible = not isMinimized
+    ContentPanel.Visible = not isMinimized
+    statsPanel.Visible = not isMinimized and (currentTab == "Stats" or buttonStates["Stats_Check Stats"])
+    if _G.SpectatePanel then
+        _G.SpectatePanel.Visible = not isMinimized
+    end
+end)
+
+          if name == "Anti AFK" then
+             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Anti-AFK-by-ALEJANDRO-/refs/heads/main/Anti%20AFK", true))
+             if func then func() end
+         end
+end)
+
+        table.insert(contentButtons, container)
+        y = y + 28
+    end
+    end
+end
+
+-- Crear pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as
+local x = 0
+for _, name in ipairs(tabs) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 96, 0, 25)
+    btn.Position = UDim2.new(0, x, 0, 0)
+    btn.Text = name
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    btn.Parent = TabPanel
+    btn.MouseButton1Click:Connect(function() switchTab(name) end)
+    tabButtons[name] = btn
+    x = x + 100
+end
+
+
+-- Panel adicional para contador personal en Stats
+local personalStatsPanel = Instance.new("Frame")
+personalStatsPanel.Size = UDim2.new(0, 195, 0, 100)
+personalStatsPanel.Position = UDim2.new(0, 10, 0, 40 + (#(contentByTab["Stats"]) * 28))
+personalStatsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+personalStatsPanel.BackgroundTransparency = 0.2
+personalStatsPanel.Visible = false
+personalStatsPanel.Parent = ContentPanel
+
+local tiempoLabel = Instance.new("TextLabel")
+tiempoLabel.Size = UDim2.new(1, -10, 0, 20)
+tiempoLabel.Position = UDim2.new(0, 5, 0, 5)
+tiempoLabel.BackgroundTransparency = 1
+tiempoLabel.TextColor3 = Color3.new(1, 1, 1)
+tiempoLabel.Font = Enum.Font.SourceSansBold
+tiempoLabel.TextSize = 16
+tiempoLabel.TextXAlignment = Enum.TextXAlignment.Left
+tiempoLabel.Parent = personalStatsPanel
+
+local fuerzaLabel = tiempoLabel:Clone()
+fuerzaLabel.Position = UDim2.new(0, 5, 0, 28)
+fuerzaLabel.Parent = personalStatsPanel
+
+local durabilidadLabel = tiempoLabel:Clone()
+durabilidadLabel.Position = UDim2.new(0, 5, 0, 51)
+durabilidadLabel.Parent = personalStatsPanel
+
+local renacimientosLabel = tiempoLabel:Clone()
+renacimientosLabel.Position = UDim2.new(0, 5, 0, 74)
+renacimientosLabel.Parent = personalStatsPanel
+
+local player = game:GetService("Players").LocalPlayer
+local RunService = game:GetService("RunService")
+
+local function getStat(name)
+	local stats = player:FindFirstChild("leaderstats") or player:FindFirstChild("PlayerStats")
+	local stat = stats and stats:FindFirstChild(name)
+	return stat or player:FindFirstChild(name)
+end
+
+local strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
+while not (strengthStat and durabilityStat and rebirthStat) do
+	RunService.RenderStepped:Wait()
+	strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
+end
+
+local startTime = tick()
+local startStrength = strengthStat.Value
+local startDurability = durabilityStat.Value
+local startRebirths = rebirthStat.Value
+
+RunService.RenderStepped:Connect(function()
+	if not personalStatsPanel.Visible then return end
+
+	local now = tick()
+	local elapsed = now - startTime
+	local h = math.floor(elapsed / 3600)
+	local m = math.floor((elapsed % 3600) / 60)
+	local s = math.floor(elapsed % 60)
+
+	local fuerza = strengthStat.Value - startStrength
+	local dura = durabilityStat.Value - startDurability
+	local rebirths = rebirthStat.Value - startRebirths
+
+	tiempoLabel.Text = string.format("Tiempo: %02d:%02d:%02d", h, m, s)
+	fuerzaLabel.Text = "Fuerza ganada: " .. abreviarNumero(fuerza)
+	durabilidadLabel.Text = "Durabilidad ganada: " .. abreviarNumero(dura)
+	renacimientosLabel.Text = "Renacimientos ganados: " .. tostring(rebirths)
+end)
+
+-- Mostrar solo si estÃ¡s en pestaÃ±a "Stats"
+local originalSwitchTab = switchTab
+switchTab = function(tabName)
+	originalSwitchTab(tabName)
+	personalStatsPanel.Visible = (tabName == "Stats")
+end
+-- Activar primera pestaÃƒÆ’Ã‚Â±a
+switchTab(lastTab)
+-- Minimizar estilo con tamaÃƒÆ’Ã‚Â±o y ocultar contenido
+local fullHeight = 400
+local minimizedHeight = 25
+local isMinimized = false
+
+MinButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    MinButton.Text = isMinimized and "+" or "-"
+    MainFrame.Size = UDim2.new(0, 700, 0, isMinimized and minimizedHeight or fullHeight)
+    TabPanel.Visible = not isMinimized
+    ContentPanel.Visible = not isMinimized
+    statsPanel.Visible = not isMinimized and (currentTab == "Stats" or buttonStates["Stats_Check Stats"])
+end)
