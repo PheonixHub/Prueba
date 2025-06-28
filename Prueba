@@ -124,14 +124,16 @@ statsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 statsPanel.BorderSizePixel = 0
 statsPanel.Visible = false
 
-    -- Restaurar paneles si estaban activos
-    if tabName == "Killing" and getgenv().AutoKillGUI and getgenv().AutoKillVisible then
-        getgenv().AutoKillGUI.Visible = true
-        getgenv().AutoKillVisible = false
+    if getgenv().AutoKillGUI then
+        getgenv().AutoKillGUI:Destroy()
+        getgenv().AutoKillGUI = nil
+        getgenv().AutoKillLoop = false
     end
-    if tabName == "Players" and getgenv().SpectatePanel and getgenv().SpectateVisible then
-        getgenv().SpectatePanel.Visible = true
-        getgenv().SpectateVisible = false
+
+    if getgenv().SpectatePanel then
+        getgenv().SpectatePanel:Destroy()
+        getgenv().SpectatePanel = nil
+        getgenv().CurrentlySpectating = nil
     end
 
 statsPanel.ScrollBarThickness = 6
@@ -225,7 +227,7 @@ end)
 -- AnimaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n del indicador
 local function animateIndicator(indicator, isActive)
     local goalColor = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 50, 50)
-    local goalText = isActive and "âœ“" or "X"
+    local goalText = isActive and "✓" or "X"
     indicator.Text = goalText
     TweenService:Create(indicator, TweenInfo.new(0.25), {TextColor3 = goalColor}):Play()
 end
@@ -240,14 +242,16 @@ local function switchTab(tabName)
     contentButtons = {}
     statsPanel.Visible = false
 
-    -- Restaurar paneles si estaban activos
-    if tabName == "Killing" and getgenv().AutoKillGUI and getgenv().AutoKillVisible then
-        getgenv().AutoKillGUI.Visible = true
-        getgenv().AutoKillVisible = false
+    if getgenv().AutoKillGUI then
+        getgenv().AutoKillGUI:Destroy()
+        getgenv().AutoKillGUI = nil
+        getgenv().AutoKillLoop = false
     end
-    if tabName == "Players" and getgenv().SpectatePanel and getgenv().SpectateVisible then
-        getgenv().SpectatePanel.Visible = true
-        getgenv().SpectateVisible = false
+
+    if getgenv().SpectatePanel then
+        getgenv().SpectatePanel:Destroy()
+        getgenv().SpectatePanel = nil
+        getgenv().CurrentlySpectating = nil
     end
 
 
@@ -507,8 +511,9 @@ if name == "Auto Kill Players" then
     end
 
     if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI.Visible = false
-        getgenv().AutoKillVisible = true
+        getgenv().AutoKillGUI:Destroy()
+        getgenv().AutoKillGUI = nil
+        getgenv().AutoKillLoop = false
         print("ðŸ›‘ Panel AutoKill cerrado")
         return
     end
@@ -589,8 +594,9 @@ end
 if name == "Espectear" then
     -- Toggle existente
     if getgenv().SpectatePanel and getgenv().SpectatePanel.Parent then
-        getgenv().SpectatePanel.Visible = false
-        getgenv().SpectateVisible = true
+        getgenv().SpectatePanel:Destroy()
+        getgenv().SpectatePanel = nil
+        getgenv().CurrentlySpectating = nil
         return
     end
 
