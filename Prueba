@@ -656,7 +656,25 @@ if name == "Espectear" then
         
         b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 100, 100) end)
         b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(70, 70, 70) end)
-        b.MouseButton1Click:Connect(function() getgenv().CurrentlySpectating = player end)
+        b.MouseButton1Click:Connect(function()
+    getgenv().CurrentlySpectating = player
+
+    -- Establece cÃ¡mara al instante
+    if player.Character then
+        local hum = player.Character:FindFirstChild("Humanoid")
+        if hum then
+            Camera.CameraSubject = hum
+        end
+    end
+
+    -- Mantiene seguimiento cuando respawnea
+    player.CharacterAdded:Connect(function(char)
+        local hum = char:WaitForChild("Humanoid", 5)
+        if hum then
+            Camera.CameraSubject = hum
+        end
+    end)
+end)
         
         b.Parent = scroll
         buttons[player] = b
