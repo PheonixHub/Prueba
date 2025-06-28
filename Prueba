@@ -473,119 +473,124 @@ if name == "Auto Punch" then
          end
 
 if name == "Auto Kill Players" then
-    getgenv().SelectedTargets = getgenv().SelectedTargets or {}
-    getgenv().AutoKillGUI = getgenv().AutoKillGUI or nil
-    getgenv().AutoKillLoop = getgenv().AutoKillLoop or nil
+    -- Reinicio de variables globales
+    getgenv().AutoKillTargets = getgenv().AutoKillTargets or {}
+    getgenv().AutoKillEnabled = true
 
+    -- Servicios necesarios
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
 
+    -- Elimina el panel anterior si ya existe
+    if game.CoreGui:FindFirstChild("AutoKillPanel") then
+        game.CoreGui:FindFirstChild("AutoKillPanel"):Destroy()
+    end
+
+    -- Crear panel
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "AutoKillPanel"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = game:GetService("CoreGui")
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 250, 0, 300)
+    mainFrame.Position = UDim2.new(0, 10, 0.5, -150)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Active = true
+    mainFrame.Draggable = true
+    mainFrame.Parent = screenGui
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    title.Text = "☠️ AutoKill Selector"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.SourceSansBold
+    title.TextSize = 20
+    title.Parent = mainFrame
+
+    local scrollingFrame = Instance.new("ScrollingFrame")
+    scrollingFrame.Size = UDim2.new(1, 0, 1, -30)
+    scrollingFrame.Position = UDim2.new(0, 0, 0, 30)
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollingFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    scrollingFrame.ScrollBarThickness = 6
+    scrollingFrame.BorderSizePixel = 0
+    scrollingFrame.Parent = mainFrame
+
+    -- Función para crear botones por jugador
+    local function updatePlayerButtons()
+        scrollingFrame:ClearAllChildren()
+
+        local ySize = 0
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer then
+                local button = Instance.new("TextButton")
+                button.Size = UDim2.new(1, -10, 0, 30)
+                button.Position = UDim2.new(0, 5, 0, ySize)
+                button.BackgroundColor3 = getgenv().AutoKillTargets[plr.Name] and Color3.fromRGB(150, 0, 0) or Color3.fromRGB(70, 70, 70)
+                button.Text = plr.Name
+                button.TextColor3 = Color3.fromRGB(255, 255, 255)
+                button.Font = Enum.Font.SourceSans
+                button.TextSize = 18
+                button.BorderSizePixel = 0
+                button.Parent = scrollingFrame
+
+                -- Activar/Desactivar objetivo al hacer click
+                button.MouseButton1Click:Connect(function()
+                    if getgenv().AutoKillTargets[plr.Name] then
+                        getgenv().AutoKillTargets[plr.Name] = nil
+                    else
+                        getgenv().AutoKillTargets[plr.Name] = true
+                    end
+                    updatePlayerButtons()
+                end)
+
+                ySize = ySize + 35
+            end
+        end
+
+        scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, ySize)
+    end
+
+    -- Actualizar lista de jugadores al entrar o salir
+    Players.PlayerAdded:Connect(updatePlayerButtons)
+    Players.PlayerRemoving:Connect(updatePlayerButtons)
+    updatePlayerButtons()
+
+    -- Función para obtener la mano
     local function getHand()
         local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
         return char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
     end
 
-    local function startAutoKillLoop()
-        if getgenv().AutoKillLoop then return end
-        getgenv().AutoKillLoop = true
-        task.spawn(function()
-            while getgenv().AutoKillLoop do
-                task.wait(0.08)
-                local hand = getHand()
-                if hand and hand:IsDescendantOf(workspace) then
-                    for _, player in pairs(Players:GetPlayers()) do
-                        if player ~= LocalPlayer and table.find(getgenv().SelectedTargets, player) then
-                            local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-                            if root and root:IsDescendantOf(workspace) then
-                                for _ = 1, 2 do
-                                    firetouchinterest(hand, root, 0)
-                                    task.wait(0.01)
-                                    firetouchinterest(hand, root, 1)
-                                end
-                            end
-                        end
+    -- Función para golpear a los seleccionados
+    local function attackSelectedPlayers()
+        local hand = getHand()
+        if not hand or not hand:IsDescendantOf(workspace) then return end
+
+        for _, target in pairs(Players:GetPlayers()) do
+            if getgenv().AutoKillTargets[target.Name] and target.Character then
+                local root = target.Character:FindFirstChild("HumanoidRootPart")
+                if root and root:IsDescendantOf(workspace) then
+                    for _ = 1, 2 do
+                        firetouchinterest(hand, root, 0)
+                        task.wait(0.01)
+                        firetouchinterest(hand, root, 1)
                     end
                 end
             end
-        end)
-    end
-
-    if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI:Destroy()
-        getgenv().AutoKillGUI = nil
-        getgenv().AutoKillLoop = false
-        print("Ã°Å¸â€ºâ€˜ Panel AutoKill cerrado")
-        return
-    end
-
-    print("Ã¢Ëœ Ã¯Â¸Â Panel AutoKill ACTIVADO")
-
-    local gui = Instance.new("ScrollingFrame")
-    gui.Name = "AutoKillGUI"
-    gui.Position = UDim2.new(0, 300, 0, 55)
-    gui.Size = UDim2.new(0, 300, 0, 300)
-    gui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    gui.BorderSizePixel = 0
-    gui.ScrollBarThickness = 6
-    gui.CanvasSize = UDim2.new(0, 0, 0, 0)
-    gui.Visible = true
-    gui.Parent = MainFrame
-
-    local layout = Instance.new("UIListLayout", gui)
-    layout.Padding = UDim.new(0, 5)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-
-
-    local function updatePlayerList()
-        for _, child in ipairs(gui:GetChildren()) do
-            if child:IsA("TextButton") then
-                child:Destroy()
-            end
         end
-
-        for _, player in pairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then
-                local button = Instance.new("TextButton", gui)
-                button.Size = UDim2.new(1, 0, 0, 25)
-                button.Text = player.DisplayName
-                button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-                button.TextColor3 = Color3.new(1, 1, 1)
-                button.Font = Enum.Font.SourceSans
-                button.TextSize = 18
-
-                if table.find(getgenv().SelectedTargets, player) then
-                    button.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
-                end
-
-                button.MouseButton1Click:Connect(function()
-                    local found = table.find(getgenv().SelectedTargets, player)
-                    if found then
-                        table.remove(getgenv().SelectedTargets, found)
-                        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-                    else
-                        table.insert(getgenv().SelectedTargets, player)
-                        button.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
-                    end
-                end)
-            end
-        end
-
-        gui.CanvasSize = UDim2.new(0, 0, 0, #Players:GetPlayers() * 30)
     end
 
-    updatePlayerList()
+    -- Bucle de ataque
     task.spawn(function()
-        while gui and gui.Parent do
-            updatePlayerList()
-            task.wait(5)
+        while getgenv().AutoKillEnabled do
+            pcall(attackSelectedPlayers)
+            task.wait(0.08)
         end
     end)
-
-    Players.PlayerAdded:Connect(updatePlayerList)
-    Players.PlayerRemoving:Connect(updatePlayerList)
-
-    getgenv().AutoKillGUI = gui
-    startAutoKillLoop()
 end
 
 -- ... [el resto del script permanece igual arriba]
