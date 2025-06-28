@@ -113,6 +113,33 @@ local ContentPanel = Instance.new("Frame")
 ContentPanel.Size = UDim2.new(1, 0, 1, -55)
 ContentPanel.Position = UDim2.new(0, 0, 0, 55)
 ContentPanel.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+
+local persistentPanels = {}
+
+local function togglePanel(name, createFunc)
+    if persistentPanels[name] then
+        persistentPanels[name].Visible = not persistentPanels[name].Visible
+    else
+        local panel = createFunc()
+        persistentPanels[name] = panel
+    end
+end
+
+local function clearNonPersistentContent()
+    for _, child in ipairs(ContentPanel:GetChildren()) do
+        if not persistentPanels[child.Name] then
+            child:Destroy()
+        end
+    end
+end
+
+local function showPersistentPanels()
+    for name, panel in pairs(persistentPanels) do
+        panel.Visible = true
+        panel.Parent = ContentPanel
+    end
+end
+
 ContentPanel.Parent = MainFrame
 
 -- Panel de estadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas integrado (600x300 dentro del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº)
