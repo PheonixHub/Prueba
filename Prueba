@@ -601,182 +601,117 @@ if name == "Espectear" then
     end
 
     local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
+    local RunService = game:GetService("RunService")
+    local LocalPlayer = Players.LocalPlayer
+    local Camera = workspace.CurrentCamera
 
-local currentlySpectating = nil
+    -- Obtener contenedor y posiciÃƒÂ³n del botÃƒÂ³n
+    local container = btn.Parent
+    local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
+    local panelOffsetY = ContentPanel.Position.Y.Offset + container.Position.Y.Offset
 
--- GUI principal
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "SpectateGUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    -- Crear panel
+    local gui = Instance.new("Frame")
+    gui.Name = "SpectatePanel"
+    gui.Size = UDim2.new(0, 400, 0, 300)
+    gui.Position = UDim2.new(0, panelOffsetX, 0, panelOffsetY)
+    gui.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    gui.BorderSizePixel = 0
+    gui.Active = true
+    gui.Parent = MainFrame
+    Instance.new("UICorner", gui)
 
--- Panel principal (siempre visible)
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 280, 0, 400)
-MainFrame.Position = UDim2.new(0, 10, 0, 60)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-MainFrame.BorderSizePixel = 0
-MainFrame.Visible = true
-MainFrame.Parent = ScreenGui
-Instance.new("UICorner", MainFrame)
+    -- ScrollingFrame
+    local scroll = Instance.new("ScrollingFrame")
+    scroll.Size = UDim2.new(1, -20, 1, -20)
+    scroll.Position = UDim2.new(0, 10, 0, 10)
+    scroll.BackgroundTransparency = 1
+    scroll.ScrollBarThickness = 6
+    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scroll.Active = true
+    scroll.Parent = gui
 
--- Área con scroll
-local ScrollingFrame = Instance.new("ScrollingFrame")
-ScrollingFrame.Size = UDim2.new(1, -20, 1, -20)
-ScrollingFrame.Position = UDim2.new(0, 10, 0, 10)
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-ScrollingFrame.BackgroundTransparency = 1
-ScrollingFrame.BorderSizePixel = 0
-ScrollingFrame.ScrollBarThickness = 6
-ScrollingFrame.Parent = MainFrame
+    local layout = Instance.new("UIListLayout", scroll)
+    layout.Padding = UDim.new(0, 6)
+    layout.SortOrder = Enum.SortOrder.Name
 
--- Layout
-local UIListLayout = Instance.new("UIListLayout", ScrollingFrame)
-UIListLayout.Padding = UDim.new(0, 6)
-UIListLayout.SortOrder = Enum.SortOrder.Name
+    -- Scroll con rueda del mouse/touch
+    scroll.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseWheel then
+            scroll.CanvasPosition = scroll.CanvasPosition + Vector2.new(0, -input.Position.Z * 30)
+        end
+    end)
 
-UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
-end)
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+    end)
 
-local buttons = {}
+    -- Botones de jugadores
+    local buttons = {}
+    local function createBtn(player)
+        local b = Instance.new("TextButton")
+        b.Size = UDim2.new(1, 0, 0, 36)
+        b.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+        b.TextColor3 = Color3.new(1, 1, 1)
+        b.Font = Enum.Font.Gotham
+        b.TextSize = 14
+        b.Text = player.DisplayName
+        b.BorderSizePixel = 0
+        b.AutoButtonColor = false
+        Instance.new("UICorner", b)
+        
+        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 100, 100) end)
+        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(70, 70, 70) end)
+        b.MouseButton1Click:Connect(function() getgenv().CurrentlySpectating = player end)
+        
+        b.Parent = scroll
+        buttons[player] = b
+    end
+    local function removeBtn(player)
+        if buttons[player] then buttons[player]:Destroy() buttons[player] = nil end
+    end
 
--- Crear botón por jugador
-local function createButton(player)
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(1, 0, 0, 36)
-	button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.Gotham
-	button.TextSize = 14
-	button.Text = player.DisplayName
-	button.BorderSizePixel = 0
-	button.AutoButtonColor = false
-	Instance.new("UICorner", button)
+    -- BotÃƒÂ³n volver a mÃƒÂ­
+    local function createReturnBtn()
+        local b = Instance.new("TextButton")
+        b.Size = UDim2.new(1, 0, 0, 36)
+        b.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+        b.TextColor3 = Color3.new(1, 1, 1)
+        b.Font = Enum.Font.GothamBold
+        b.TextSize = 14
+        b.Text = "Ã¢â€ Â© Volver a mÃƒÂ­"
+        b.BorderSizePixel = 0
+        b.AutoButtonColor = false
+        Instance.new("UICorner", b)
 
-	button.MouseEnter:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
-	end)
-	button.MouseLeave:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-	end)
+        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 80, 80) end)
+        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(80, 60, 60) end)
+        b.MouseButton1Click:Connect(function()
+            getgenv().CurrentlySpectating = nil
+            if LocalPlayer.Character then
+                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if hum then Camera.CameraSubject = hum end
+            end
+        end)
+        b.Parent = scroll
+    end
 
-	button.MouseButton1Click:Connect(function()
-		currentlySpectating = player
-	end)
+    for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createBtn(p) end end
+    createReturnBtn()
+    Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then createBtn(p) end end)
+    Players.PlayerRemoving:Connect(function(p) removeBtn(p) if getgenv().CurrentlySpectating == p then getgenv().CurrentlySpectating = nil end end)
 
-	button.Parent = ScrollingFrame
-	buttons[player] = button
+    RunService.RenderStepped:Connect(function()
+        local t = getgenv().CurrentlySpectating
+        if t and t.Character then
+            local hum = t.Character:FindFirstChild("Humanoid")
+            if hum and Camera.CameraSubject ~= hum then Camera.CameraSubject = hum end
+        end
+    end)
+
+    getgenv().SpectatePanel = gui
 end
 
--- Quitar botón de jugador
-local function removeButton(player)
-	if buttons[player] then
-		buttons[player]:Destroy()
-		buttons[player] = nil
-	end
-end
-
--- Botón para volver a uno mismo
-local function createReturnButton()
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(1, 0, 0, 36)
-	button.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.GothamBold
-	button.TextSize = 14
-	button.Text = "↩ Volver a mí"
-	button.BorderSizePixel = 0
-	button.AutoButtonColor = false
-	Instance.new("UICorner", button)
-
-	button.MouseEnter:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(100, 80, 80)
-	end)
-	button.MouseLeave:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
-	end)
-
-	button.MouseButton1Click:Connect(function()
-		currentlySpectating = nil
-		if LocalPlayer.Character then
-			local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
-			if hum then
-				Camera.CameraSubject = hum
-			end
-		end
-	end)
-
-	button.Parent = ScrollingFrame
-end
-
--- Inicializar botones
-for _, player in ipairs(Players:GetPlayers()) do
-	if player ~= LocalPlayer then
-		createButton(player)
-	end
-end
-createReturnButton()
-
--- Eventos de unión y salida
-Players.PlayerAdded:Connect(function(player)
-	if player ~= LocalPlayer then
-		createButton(player)
-	end
-end)
-
-Players.PlayerRemoving:Connect(function(player)
-	removeButton(player)
-	if currentlySpectating == player then
-		currentlySpectating = nil
-	end
-end)
-
--- Mantener cámara en especteado
-RunService.RenderStepped:Connect(function()
-	if currentlySpectating and currentlySpectating.Character then
-		local hum = currentlySpectating.Character:FindFirstChild("Humanoid")
-		if hum and Camera.CameraSubject ~= hum then
-			Camera.CameraSubject = hum
-		end
-	end
-end)
-
--- Reasignar cámara al especteado si reaparece
-Players.PlayerAdded:Connect(function(player)
-	if player == currentlySpectating then
-		player.CharacterAdded:Connect(function(char)
-			local hum = char:WaitForChild("Humanoid", 5)
-			if hum then
-				Camera.CameraSubject = hum
-			end
-		end)
-	end
-end)
-
--- Quitar especteo si el especteado se va
-Players.PlayerRemoving:Connect(function(player)
-	if player == currentlySpectating then
-		currentlySpectating = nil
-	end
-end)
-
--- Si reaparece el local player, mantener la cámara en el especteado
-LocalPlayer.CharacterAdded:Connect(function()
-	task.wait(1)
-	if currentlySpectating then
-		local char = currentlySpectating.Character
-		if char then
-			local hum = char:FindFirstChild("Humanoid")
-			if hum then
-				Camera.CameraSubject = hum
-			end
-		end
-	end
-end)
           if name == "Anti AFK" then
              local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Anti-AFK-by-ALEJANDRO-/refs/heads/main/Anti%20AFK", true))
              if func then func() end
