@@ -446,6 +446,246 @@ if name == "Auto Punch" then
              if func then func() end
          end
 
+if name == "Auto Kill Players" then
+    getgenv().SelectedTargets = getgenv().SelectedTargets or {}
+    getgenv().AutoKillGUI = getgenv().AutoKillGUI or nil
+    getgenv().AutoKillLoop = getgenv().AutoKillLoop or nil
+
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local function getHand()
+        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        return char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
+    end
+
+    local function startAutoKillLoop()
+        if getgenv().AutoKillLoop then return end
+        getgenv().AutoKillLoop = true
+        task.spawn(function()
+            while getgenv().AutoKillLoop do
+                task.wait(0.08)
+                local hand = getHand()
+                if hand and hand:IsDescendantOf(workspace) then
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and table.find(getgenv().SelectedTargets, player) then
+                            local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                            if root and root:IsDescendantOf(workspace) then
+                                for _ = 1, 2 do
+                                    firetouchinterest(hand, root, 0)
+                                    task.wait(0.01)
+                                    firetouchinterest(hand, root, 1)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+
+    if getgenv().AutoKillGUI then
+        getgenv().AutoKillGUI:Destroy()
+        getgenv().AutoKillGUI = nil
+        getgenv().AutoKillLoop = false
+        print("ðŸ›‘ Panel AutoKill cerrado")
+        return
+    end
+
+    print("â˜ ï¸ Panel AutoKill ACTIVADO")
+
+    local gui = Instance.new("ScrollingFrame")
+    gui.Name = "AutoKillGUI"
+    gui.Position = UDim2.new(0, 300, 0, 55)
+    gui.Size = UDim2.new(0, 300, 0, 300)
+    gui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    gui.BorderSizePixel = 0
+    gui.ScrollBarThickness = 6
+    gui.CanvasSize = UDim2.new(0, 0, 0, 0)
+    gui.Visible = true
+    gui.Parent = MainFrame
+
+    local layout = Instance.new("UIListLayout", gui)
+    layout.Padding = UDim.new(0, 5)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+
+    local function updatePlayerList()
+        for _, child in ipairs(gui:GetChildren()) do
+            if child:IsA("TextButton") then
+                child:Destroy()
+            end
+        end
+
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local button = Instance.new("TextButton", gui)
+                button.Size = UDim2.new(1, 0, 0, 25)
+                button.Text = player.DisplayName
+                button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                button.TextColor3 = Color3.new(1, 1, 1)
+                button.Font = Enum.Font.SourceSans
+                button.TextSize = 18
+
+                if table.find(getgenv().SelectedTargets, player) then
+                    button.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+                end
+
+                button.MouseButton1Click:Connect(function()
+                    local found = table.find(getgenv().SelectedTargets, player)
+                    if found then
+                        table.remove(getgenv().SelectedTargets, found)
+                        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                    else
+                        table.insert(getgenv().SelectedTargets, player)
+                        button.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+                    end
+                end)
+            end
+        end
+
+        gui.CanvasSize = UDim2.new(0, 0, 0, #Players:GetPlayers() * 30)
+    end
+
+    updatePlayerList()
+    task.spawn(function()
+        while gui and gui.Parent do
+            updatePlayerList()
+            task.wait(5)
+        end
+    end)
+
+    Players.PlayerAdded:Connect(updatePlayerList)
+    Players.PlayerRemoving:Connect(updatePlayerList)
+
+    getgenv().AutoKillGUI = gui
+    startAutoKillLoop()
+end
+
+-- ... [el resto del script permanece igual arriba]
+
+-- Espectear: Panel integrado al lado del botÃ³n "Espectear"
+if name == "Espectear" then
+    -- Toggle existente
+    if getgenv().SpectatePanel and getgenv().SpectatePanel.Parent then
+        getgenv().SpectatePanel:Destroy()
+        getgenv().SpectatePanel = nil
+        getgenv().CurrentlySpectating = nil
+        return
+    end
+
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+    local LocalPlayer = Players.LocalPlayer
+    local Camera = workspace.CurrentCamera
+
+    -- Obtener contenedor y posiciÃ³n del botÃ³n
+    local container = btn.Parent
+    local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
+    local panelOffsetY = ContentPanel.Position.Y.Offset + container.Position.Y.Offset
+
+    -- Crear panel
+    local gui = Instance.new("Frame")
+    gui.Name = "SpectatePanel"
+    gui.Size = UDim2.new(0, 400, 0, 300)
+    gui.Position = UDim2.new(0, panelOffsetX, 0, panelOffsetY)
+    gui.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    gui.BorderSizePixel = 0
+    gui.Active = true
+    gui.Parent = MainFrame
+    Instance.new("UICorner", gui)
+
+    -- ScrollingFrame
+    local scroll = Instance.new("ScrollingFrame")
+    scroll.Size = UDim2.new(1, -20, 1, -20)
+    scroll.Position = UDim2.new(0, 10, 0, 10)
+    scroll.BackgroundTransparency = 1
+    scroll.ScrollBarThickness = 6
+    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scroll.Active = true
+    scroll.Parent = gui
+
+    local layout = Instance.new("UIListLayout", scroll)
+    layout.Padding = UDim.new(0, 6)
+    layout.SortOrder = Enum.SortOrder.Name
+
+    -- Scroll con rueda del mouse/touch
+    scroll.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseWheel then
+            scroll.CanvasPosition = scroll.CanvasPosition + Vector2.new(0, -input.Position.Z * 30)
+        end
+    end)
+
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+    end)
+
+    -- Botones de jugadores
+    local buttons = {}
+    local function createBtn(player)
+        local b = Instance.new("TextButton")
+        b.Size = UDim2.new(1, 0, 0, 36)
+        b.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+        b.TextColor3 = Color3.new(1, 1, 1)
+        b.Font = Enum.Font.Gotham
+        b.TextSize = 14
+        b.Text = player.DisplayName
+        b.BorderSizePixel = 0
+        b.AutoButtonColor = false
+        Instance.new("UICorner", b)
+        
+        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 100, 100) end)
+        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(70, 70, 70) end)
+        b.MouseButton1Click:Connect(function() getgenv().CurrentlySpectating = player end)
+        
+        b.Parent = scroll
+        buttons[player] = b
+    end
+    local function removeBtn(player)
+        if buttons[player] then buttons[player]:Destroy() buttons[player] = nil end
+    end
+
+    -- BotÃ³n volver a mÃ­
+    local function createReturnBtn()
+        local b = Instance.new("TextButton")
+        b.Size = UDim2.new(1, 0, 0, 36)
+        b.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+        b.TextColor3 = Color3.new(1, 1, 1)
+        b.Font = Enum.Font.GothamBold
+        b.TextSize = 14
+        b.Text = "â†© Volver a mÃ­"
+        b.BorderSizePixel = 0
+        b.AutoButtonColor = false
+        Instance.new("UICorner", b)
+
+        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 80, 80) end)
+        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(80, 60, 60) end)
+        b.MouseButton1Click:Connect(function()
+            getgenv().CurrentlySpectating = nil
+            if LocalPlayer.Character then
+                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if hum then Camera.CameraSubject = hum end
+            end
+        end)
+        b.Parent = scroll
+    end
+
+    for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createBtn(p) end end
+    createReturnBtn()
+    Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then createBtn(p) end end)
+    Players.PlayerRemoving:Connect(function(p) removeBtn(p) if getgenv().CurrentlySpectating == p then getgenv().CurrentlySpectating = nil end end)
+
+    RunService.RenderStepped:Connect(function()
+        local t = getgenv().CurrentlySpectating
+        if t and t.Character then
+            local hum = t.Character:FindFirstChild("Humanoid")
+            if hum and Camera.CameraSubject ~= hum then Camera.CameraSubject = hum end
+        end
+    end)
+
+    getgenv().SpectatePanel = gui
+end
+
           if name == "Anti AFK" then
              local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Anti-AFK-by-ALEJANDRO-/refs/heads/main/Anti%20AFK", true))
              if func then func() end
