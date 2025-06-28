@@ -36,7 +36,7 @@ TitleBar.BorderSizePixel = 0
 TitleBar.Parent = MainFrame
 
 local Title = Instance.new("TextLabel")
-[cite_start]Title.Size = UDim2.new(1, -30, 1, 0) [cite: 2]
+Title.Size = UDim2.new(1, -30, 1, 0)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
 Title.Text = "PHEONIX HUB"
@@ -62,14 +62,14 @@ UICorner2.CornerRadius = UDim.new(0, 6)
 local tabs = {"OpFarmeo", "Stats", "Killing", "Players", "Rocas", "Teleport", "Creditos"}
 local contentByTab = {
     ["OpFarmeo"] = {"Fast Rebith + Bugs", "Auto Fuerza Op", "Auto Fuerza", "Protein egg", "Ocultar Particulas"},
-    [cite_start]["Killing"] = {"Auto Punch", "Auto Kill All", "Auto Kill Players", "Kills Muerto"}, [cite: 3]
+    ["Killing"] = {"Auto Punch", "Auto Kill All", "Auto Kill Players", "Kills Muerto"},
     ["Stats"] = {"Check Stats"},
     ["Players"] = {"Lock Client Position", "Anti AFK", "Espectear"},
     ["Rocas"] = {
         "Roca de 10m", "Roca de 5m", "Roca de 1m",
         "Roca de 750k", "Roca de 400k", "Roca de 150k",
         "Roca de 5k", "Roca de 100", "Roca de 10", "Roca de 0"},
-    [cite_start]["Teleport"] = {"Tp 0 Rebiths", "Tp 1 Rebith", "Tp 5 Rebiths", "Tp 15 Rebiths", "Tp 30 Rebiths", "Tp king", "Tp jungla gym"}, [cite: 4]
+    ["Teleport"] = {"Tp 0 Rebiths", "Tp 1 Rebith", "Tp 5 Rebiths", "Tp 15 Rebiths", "Tp 30 Rebiths", "Tp king", "Tp jungla gym"},
     ["Creditos"] = {
         "username: Demon_misteriousX",
         "nombre: XxAlejandroxX"
@@ -91,8 +91,8 @@ TabPanel.Parent = MainFrame
 local tabCount = #tabs
 for i, name in ipairs(tabs) do
     local btn = Instance.new("TextButton")
-    [cite_start]btn.Size = UDim2.new(1 / tabCount, 0, 1, 0) [cite: 5]
-    [cite_start]btn.Position = UDim2.new((i - 1) / tabCount, 0, 0, 0) [cite: 5]
+    btn.Size = UDim2.new(1 / tabCount, 0, 1, 0)
+    btn.Position = UDim2.new((i - 1) / tabCount, 0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.Gotham
@@ -115,27 +115,13 @@ ContentPanel.Position = UDim2.new(0, 0, 0, 55)
 ContentPanel.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
 ContentPanel.Parent = MainFrame
 
-[cite_start]-- Panel de estadísticas integrado (600x300 dentro del menú) [cite: 6]
+-- Panel de estadísticas integrado
 local statsPanel = Instance.new("ScrollingFrame")
 statsPanel.Position = UDim2.new(0, 220, 0, 55)
 statsPanel.Size = UDim2.new(0, 380, 1, -65)
-
 statsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 statsPanel.BorderSizePixel = 0
 statsPanel.Visible = false
-
-    if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI:Destroy()
-        getgenv().AutoKillGUI = nil
-        getgenv().AutoKillLoop = false
-    end
-
-    if getgenv().SpectatePanel then
-        getgenv().SpectatePanel:Destroy()
-        getgenv().SpectatePanel = nil
-        [cite_start]getgenv().CurrentlySpectating = nil [cite: 7]
-    end
-
 statsPanel.ScrollBarThickness = 6
 statsPanel.Parent = MainFrame
 
@@ -144,28 +130,6 @@ statsLayout.Padding = UDim.new(0, 2)
 statsLayout.Parent = statsPanel
 
 local playerLines = {}
-
-local function updateLine(player, strength, durability, rebirths)
-    if not playerLines[player] then
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -4, 0, 20)
-        label.BackgroundTransparency = 1
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.SourceSans
-        [cite_start]label.TextSize = 14 [cite: 8]
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = statsPanel
-        playerLines[player] = label
-    end
-
-    [cite_start]playerLines[player].Text = string.format("%s |\nFuerza: %s | Dura: %s | Rebirths: %s", [cite: 9]
-        player.Name,
-        strength or "N/A",
-        durability or "N/A",
-        rebirths or "N/A"
-    )
-end
-
 
 -- Función para abreviar números
 local function abreviarNumero(num)
@@ -178,7 +142,7 @@ local function abreviarNumero(num)
 	}
 	for _, ab in ipairs(abreviaciones) do
 		if num and num >= ab.valor then
-			[cite_start]return string.format("%.2f%s", num / ab.valor, ab.sufijo) [cite: 10]
+			return string.format("%.2f%s", num / ab.valor, ab.sufijo)
 		end
 	end
 	return tostring(num or "0")
@@ -194,11 +158,11 @@ local function updateLine(player, strength, durability, rebirths)
         label.Font = Enum.Font.SourceSans
         label.TextSize = 14
         label.TextXAlignment = Enum.TextXAlignment.Left
-        [cite_start]label.Parent = statsPanel [cite: 11]
+        label.Parent = statsPanel
         playerLines[player] = label
     end
 
-    [cite_start]playerLines[player].Text = string.format("%s |\nFuerza: %s | Dura: %s | Rebirths: %s", [cite: 12]
+    playerLines[player].Text = string.format("%s | Fuerza: %s | Dura: %s | Rebirths: %s",
         player.Name,
         abreviarNumero(strength),
         abreviarNumero(durability),
@@ -211,7 +175,7 @@ RunService.RenderStepped:Connect(function()
     for _, player in pairs(Players:GetPlayers()) do
         local stats = player:FindFirstChild("leaderstats") or player:FindFirstChild("PlayerStats")
         local strength = stats and stats:FindFirstChild("Strength") or player:FindFirstChild("Strength")
-        [cite_start]local durability = stats and stats:FindFirstChild("Durability") or player:FindFirstChild("Durability") [cite: 13]
+        local durability = stats and stats:FindFirstChild("Durability") or player:FindFirstChild("Durability")
         local rebirths = stats and stats:FindFirstChild("Rebirths") or player:FindFirstChild("Rebirths")
         updateLine(player, strength and strength.Value, durability and durability.Value, rebirths and rebirths.Value)
     end
@@ -227,7 +191,7 @@ end)
 -- Animación del indicador
 local function animateIndicator(indicator, isActive)
     local goalColor = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 50, 50)
-    [cite_start]local goalText = isActive and "✓" or "X" [cite: 14]
+    local goalText = isActive and "✓" or "X"
     indicator.Text = goalText
     TweenService:Create(indicator, TweenInfo.new(0.25), {TextColor3 = goalColor}):Play()
 end
@@ -242,552 +206,507 @@ local function switchTab(tabName)
     contentButtons = {}
     statsPanel.Visible = false
 
-    -- Ocultar AutoKillGUI y SpectatePanel al cambiar de pestaña
     if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI.Visible = false -- Solo ocultar, no destruir
+        getgenv().AutoKillGUI:Destroy()
+        getgenv().AutoKillGUI = nil
+        getgenv().AutoKillEnabled = false
     end
 
     if getgenv().SpectatePanel then
         getgenv().SpectatePanel:Destroy()
         getgenv().SpectatePanel = nil
-        [cite_start]getgenv().CurrentlySpectating = nil [cite: 15]
+        getgenv().CurrentlySpectating = nil
     end
-
-
     
     if tabName == "Creditos" then
         local y = 10
         local lines = {
             "Este Script fue creado por:",
-    
-            [cite_start]"username: Demon_misteriousX", [cite: 16]
-
+            "username: Demon_misteriousX",
             "Siganme en TikTok: @quiensabe_095",
-
             "Gracias por comprar este Script",
-
             "Pronto mas Scrips como este y mas Op!"
         }
 
         for _, text in ipairs(lines) do
             local label = Instance.new("TextLabel")
-            [cite_start]label.Size = UDim2.new(0, 400, 0, 20) [cite: 17]
+            label.Size = UDim2.new(0, 400, 0, 20)
             label.Position = UDim2.new(0, 10, 0, y)
             label.BackgroundTransparency = 1
             label.TextColor3 = Color3.fromRGB(0, 0, 0)
             label.Font = Enum.Font.SourceSans
             label.TextSize = 16
-            [cite_start]label.TextXAlignment = Enum.TextXAlignment.Left [cite: 18]
+            label.TextXAlignment = Enum.TextXAlignment.Left
             label.Text = text
             label.Parent = ContentPanel
             table.insert(contentButtons, label)
             y = y + 25
         end
     else
-local y = 10
-    for _, name in ipairs(contentByTab[tabName] or {}) do
-        local key = tabName .. "_" .. name
- 
-        [cite_start]local isActive = buttonStates[key] or false [cite: 19]
+        local y = 10
+        for _, name in ipairs(contentByTab[tabName] or {}) do
+            local key = tabName .. "_" .. name
+            local isActive = buttonStates[key] or false
 
-        local container = Instance.new("Frame")
-        container.Size = UDim2.new(0, 195, 0, 25)
-        container.Position = UDim2.new(0, 10, 0, y)
-        container.BackgroundTransparency = 1
-        container.Parent = ContentPanel
+            local container = Instance.new("Frame")
+            container.Size = UDim2.new(0, 195, 0, 25)
+            container.Position = UDim2.new(0, 10, 0, y)
+            container.BackgroundTransparency = 1
+            container.Parent = ContentPanel
 
-        local btn = Instance.new("TextButton")
-        [cite_start]btn.Size = UDim2.new(0, 195, 1, 0) [cite: 20]
-        btn.Position = UDim2.new(0, 0, 0, 0)
-        btn.Text = name
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-        btn.Parent = container
+            local btn = Instance.new("TextButton")
+            btn.Size = UDim2.new(0, 195, 1, 0)
+            btn.Position = UDim2.new(0, 0, 0, 0)
+            btn.Text = name
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            btn.Parent = container
 
-        local indicator = Instance.new("TextLabel")
-        indicator.Size = UDim2.new(0, 30, 1, 0)
-        indicator.Position = UDim2.new(1, -30, 0, 0)
-        indicator.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
- 
-        [cite_start]indicator.Font = Enum.Font.SourceSansBold [cite: 21]
-        indicator.TextScaled = true
-        indicator.Parent = container
+            local indicator = Instance.new("TextLabel")
+            indicator.Size = UDim2.new(0, 30, 1, 0)
+            indicator.Position = UDim2.new(1, -30, 0, 0)
+            indicator.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            indicator.Font = Enum.Font.SourceSansBold
+            indicator.TextScaled = true
+            indicator.Parent = container
 
-        animateIndicator(indicator, isActive)
-
-        btn.MouseButton1Click:Connect(function()
-            isActive = not isActive
-            buttonStates[key] = isActive
             animateIndicator(indicator, isActive)
 
-            
-            if name == "Check Stats" then
-                [cite_start]statsPanel.Visible = not statsPanel.Visible [cite: 22]
-            end
+            btn.MouseButton1Click:Connect(function()
+                isActive = not isActive
+                buttonStates[key] = isActive
+                animateIndicator(indicator, isActive)
 
-            if name == "Lock Client Position" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Lock-client-position-2/refs/heads/main/Lock%202", true))
-        
-                [cite_start]if func then func() end [cite: 23]
-            end
-
-if name == "Tp 0 Rebiths" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-0-Rebiths-/refs/heads/main/Tp", true))
-                if func then func() end
-            
-            [cite_start]end [cite: 24]
-
-if name == "Tp 1 Rebith" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-1-rebiths-/refs/heads/main/Tp", true))
-                if func then func() end
-            end
-
-if name == "Tp 5 Rebiths" then
-                [cite_start]_G.lockPosition = isActive [cite: 25]
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-portal-morado/refs/heads/main/Tp%20portal%20morado", true))
-                if func then func() end
-            end
-
-if name == "Tp 15 Rebiths" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-15-renas/refs/heads/main/Tp%2015", true))
-    
-                [cite_start]if func then func() end [cite: 26]
-            end
-
-if name == "Tp 30 Rebiths" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-30-Rebiths-/refs/heads/main/Tp%20portal%20blanco", true))
-                if func then func() end
-        
-            [cite_start]end [cite: 27]
-
-if name == "Tp king" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-king/refs/heads/main/Tp%20king", true))
-                if func then func() end
-            end
-
-       if name == "Tp jungla gym" then
-        
-                [cite_start]_G.lockPosition = isActive [cite: 28]
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-jungla-/refs/heads/main/Tp%20jungla", true))
-                if func then func() end
-            end
-
-          if name == "Protein egg" then
-              local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Protein-egg/refs/heads/main/Egg", true))()
-     
-              [cite_start]if func then func() end [cite: 29]
-          end
-
-          if name == "Kills Muerto" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Script-combinando-kill/refs/heads/main/Script%20para%20no%20comer%20eggs", true))()
-             if func then func() end
-         end
-
-         if name == "Fast Rebith + Bugs" then
-   
-              [cite_start]local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Fast-Rebith-/refs/heads/main/Fast%20rebith", true))() [cite: 30]
-             if func then func() end
-         end
-
-         if name == "Golpe Sin Animacion" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Fast-Rebith-/refs/heads/main/Fast%20rebith", true))()
-             if func then func() end
-         end
-
-  
-          [cite_start]if name == "Auto Fuerza Op" then [cite: 31]
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Auto-fuerza-OP-2.0/refs/heads/main/Auto%20fuerza", true))()
-             if func then func() end
-         end
-
-        if name == "Hide Frame" then
-            local func =loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Hide-frame/refs/heads/main/Particulas", true))()
-            if func then func() end
-  
-            [cite_start]end [cite: 32]
-
-         if name == "Roca de 10m" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-10m/refs/heads/main/Roca%2010m", true))()
-             if func then func() end
-         end
-
-         if name == "Roca de 5k" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-5k/refs/heads/main/5k", true))()
-    
-              [cite_start]if func then func() end [cite: 33]
-         end
-
-        if name == "Roca de 5m" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-5m/refs/heads/main/5m", true))()
-             if func then func() end
-         end
-
-        if name == "Roca de 1m" then
-       
-              [cite_start]local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-1m/refs/heads/main/Roca%20de%201m", true))() [cite: 34]
-             if func then func() end
-         end
-
-if name == "Auto Kill All" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Auto-kill-all-/refs/heads/main/Auto%20kill%20para%20todos", true))
-                [cite_start]if func then func() end [cite: 35]
-            end
-
-if name == "Auto Punch" then
-                _G.lockPosition = isActive
-                local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Auto-punch-remote/refs/heads/main/Auto%20punch", true))
-                if func then func() end
-            end
-
-        [cite_start]if name == "Roca de 750k" then [cite: 36]
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-750k/refs/heads/main/Roca%20de%20750k", true))()
-             if func then func() end
-         end
-
-        if name == "Roca de 400k" then
-             local func = loadstring(game:HttpGet("", true))()
-             if func then func() end
-        
-            [cite_start]end [cite: 37]
-
-        if name == "Roca de 150k" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-150k/refs/heads/main/Roca%20de%20150k", true))()
-             if func then func() end
-         end
-
-        if name == "Roca de 100" then
-             local func = loadstring(game:HttpGet("", true))()
-           
-            [cite_start]if func then func() end [cite: 38]
-         end
-
-       if name == "Roca de 10" then
-             local func = loadstring(game:HttpGet("", true))()
-             if func then func() end
-         end
-
-       if name == "Roca de 0" then
-             [cite_start]local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-0-/refs/heads/main/Roca%20de%200%20dura", true))() [cite: 39]
-             if func then func() end
-         end
-
-        if name == "Auto Fuerza" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Auto-fuerza-normal/refs/heads/main/Fuerza%20normal", true))()
-             if func then func() end
-         end
-
-        if name == "Ocultar Particulas" then
-    
-             [cite_start]local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Particulas/refs/heads/main/Particulas", true))() [cite: 40]
-             if func then func() end
-         end
-
-if name == "Auto Kill Players" then
-    -- Reinicio de variables globales para el loop de ataque
-    getgenv().AutoKillTargets = getgenv().AutoKillTargets or {}
-    getgenv().AutoKillEnabled = true -- Asegurarse de que el loop siempre esté habilitado
-
-    -- Referencia al panel
-    local autoKillPanel = getgenv().AutoKillGUI
-
-    -- Si el panel ya existe, lo ocultamos/mostramos
-    if autoKillPanel then
-        autoKillPanel.Visible = not autoKillPanel.Visible
-    else
-        -- Obtener contenedor y posición del botón "Auto Kill Players"
-        local container = btn.Parent
-        local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
-        local panelOffsetY = container.Position.Y.Offset -- Relativo al ContentPanel
-
-        -- Crear panel
-        autoKillPanel = Instance.new("Frame")
-        autoKillPanel.Name = "AutoKillGUI" -- Usamos el mismo nombre para la variable global
-        autoKillPanel.Size = UDim2.new(0, 250, 0, 300)
-        autoKillPanel.Position = UDim2.new(0, panelOffsetX, 0, panelOffsetY)
-        autoKillPanel.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        autoKillPanel.BorderSizePixel = 0
-        autoKillPanel.Active = true
-        autoKillPanel.Draggable = true
-        autoKillPanel.Parent = ContentPanel -- ¡Importante! Parentar al ContentPanel
-
-        Instance.new("UICorner", autoKillPanel).CornerRadius = UDim.new(0, 8) -- Añadir esquina para consistencia
-
-        local title = Instance.new("TextLabel")
-        title.Size = UDim2.new(1, 0, 0, 30)
-        title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        title.Text = "☠️ AutoKill Selector"
-        title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        title.Font = Enum.Font.SourceSansBold
-        title.TextSize = 20
-        title.Parent = autoKillPanel
-
-        local scrollingFrame = Instance.new("ScrollingFrame")
-        scrollingFrame.Size = UDim2.new(1, 0, 1, -30)
-        scrollingFrame.Position = UDim2.new(0, 0, 0, 30)
-        scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-        scrollingFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        scrollingFrame.ScrollBarThickness = 6
-        scrollingFrame.BorderSizePixel = 0
-        scrollingFrame.Parent = autoKillPanel
-
-        -- Layout para los botones de jugadores
-        local layout = Instance.new("UIListLayout", scrollingFrame)
-        layout.Padding = UDim.new(0, 5)
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-
-        -- Función para crear/actualizar botones por jugador
-        local function updatePlayerButtons()
-            for _, child in ipairs(scrollingFrame:GetChildren()) do
-                if child:IsA("TextButton") then
-                    child:Destroy()
+                if name == "Check Stats" then
+                    statsPanel.Visible = not statsPanel.Visible
                 end
-            end
 
-            local yOffset = 0
-            for _, plr in ipairs(Players:GetPlayers()) do
-                if plr ~= LocalPlayer then
-                    local button = Instance.new("TextButton")
-                    button.Size = UDim2.new(1, -10, 0, 30)
-                    button.Position = UDim2.new(0, 5, 0, yOffset) -- Posición relativa al ScrollingFrame
-                    button.BackgroundColor3 = getgenv().AutoKillTargets[plr.Name] and Color3.fromRGB(150, 0, 0) or Color3.fromRGB(70, 70, 70)
-                    button.Text = plr.Name
-                    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    button.Font = Enum.Font.SourceSans
-                    button.TextSize = 18
-                    button.BorderSizePixel = 0
-                    button.Parent = scrollingFrame
+                if name == "Lock Client Position" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Lock-client-position-2/refs/heads/main/Lock%202", true))
+                    if func then func() end
+                end
 
-                    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 6) -- Esquinas para los botones
+				-- Start Paste other buttons here
+                if name == "Tp 0 Rebiths" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-0-Rebiths-/refs/heads/main/Tp", true))
+                    if func then func() end
+                end
+    
+                if name == "Tp 1 Rebith" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-1-rebiths-/refs/heads/main/Tp", true))
+                    if func then func() end
+                end
+    
+                if name == "Tp 5 Rebiths" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-portal-morado/refs/heads/main/Tp%20portal%20morado", true))
+                    if func then func() end
+                end
+    
+                if name == "Tp 15 Rebiths" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-15-renas/refs/heads/main/Tp%2015", true))
+                    if func then func() end
+                end
+    
+                if name == "Tp 30 Rebiths" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-30-Rebiths-/refs/heads/main/Tp%20portal%20blanco", true))
+                    if func then func() end
+                end
+    
+                if name == "Tp king" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-king/refs/heads/main/Tp%20king", true))
+                    if func then func() end
+                end
+    
+                if name == "Tp jungla gym" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Tp-jungla-/refs/heads/main/Tp%20jungla", true))
+                    if func then func() end
+                end
+    
+                if name == "Protein egg" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Protein-egg/refs/heads/main/Egg", true))()
+                    if func then func() end
+                end
+    
+                if name == "Kills Muerto" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Script-combinando-kill/refs/heads/main/Script%20para%20no%20comer%20eggs", true))()
+                    if func then func() end
+                end
+    
+                if name == "Fast Rebith + Bugs" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Fast-Rebith-/refs/heads/main/Fast%20rebith", true))()
+                    if func then func() end
+                end
+    
+                if name == "Golpe Sin Animacion" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Fast-Rebith-/refs/heads/main/Fast%20rebith", true))()
+                    if func then func() end
+                end
+    
+                if name == "Auto Fuerza Op" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Auto-fuerza-OP-2.0/refs/heads/main/Auto%20fuerza", true))()
+                    if func then func() end
+                end
+    
+                if name == "Hide Frame" then
+                    local func =loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Hide-frame/refs/heads/main/Particulas", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 10m" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-10m/refs/heads/main/Roca%2010m", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 5k" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-5k/refs/heads/main/5k", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 5m" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-5m/refs/heads/main/5m", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 1m" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-1m/refs/heads/main/Roca%20de%201m", true))()
+                    if func then func() end
+                end
+    
+                if name == "Auto Kill All" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Auto-kill-all-/refs/heads/main/Auto%20kill%20para%20todos", true))
+                    if func then func() end
+                end
+    
+                if name == "Auto Punch" then
+                    _G.lockPosition = isActive
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/PheonixHub/Auto-punch-remote/refs/heads/main/Auto%20punch", true))
+                    if func then func() end
+                end
+    
+                if name == "Roca de 750k" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-750k/refs/heads/main/Roca%20de%20750k", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 400k" then
+                    local func = loadstring(game:HttpGet("", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 150k" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-150k/refs/heads/main/Roca%20de%20150k", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 100" then
+                    local func = loadstring(game:HttpGet("", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 10" then
+                    local func = loadstring(game:HttpGet("", true))()
+                    if func then func() end
+                end
+    
+                if name == "Roca de 0" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Roca-de-0-/refs/heads/main/Roca%20de%200%20dura", true))()
+                    if func then func() end
+                end
+    
+                if name == "Auto Fuerza" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Auto-fuerza-normal/refs/heads/main/Fuerza%20normal", true))()
+                    if func then func() end
+                end
+    
+                if name == "Ocultar Particulas" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Particulas/refs/heads/main/Particulas", true))()
+                    if func then func() end
+                end
+				-- End Paste other buttons here
 
-                    -- Activar/Desactivar objetivo al hacer click
-                    button.MouseButton1Click:Connect(function()
-                        if getgenv().AutoKillTargets[plr.Name] then
-                            getgenv().AutoKillTargets[plr.Name] = nil
-                        else
-                            getgenv().AutoKillTargets[plr.Name] = true
+                -- ############# START OF MODIFIED CODE #############
+                if name == "Auto Kill Players" then
+                    -- If the panel is active, destroy it and stop the loop
+                    if not isActive or not getgenv().AutoKillGUI then
+                        if getgenv().AutoKillGUI then
+                            getgenv().AutoKillGUI:Destroy()
                         end
-                        updatePlayerButtons() -- Actualizar visualmente el botón
+                        getgenv().AutoKillGUI = nil
+                        getgenv().AutoKillEnabled = false
+                        print("☠️ Panel AutoKill Desactivado")
+                        return
+                    end
+
+                    print("☠️ Panel AutoKill Activado")
+
+                    -- Reset global variables
+                    getgenv().AutoKillTargets = getgenv().AutoKillTargets or {}
+                    getgenv().AutoKillEnabled = true
+
+                    -- Services
+                    local Players = game:GetService("Players")
+                    local LocalPlayer = Players.LocalPlayer
+
+                    -- Create the panel inside the existing MainFrame
+                    local autoKillFrame = Instance.new("Frame")
+                    autoKillFrame.Name = "AutoKillGUI" -- Use global name for detection
+                    autoKillFrame.Size = UDim2.new(0, 250, 0, 300)
+                    autoKillFrame.Position = UDim2.new(0, 220, 0, 55) -- Position relative to MainFrame
+                    autoKillFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+                    autoKillFrame.BorderSizePixel = 0
+                    autoKillFrame.Parent = MainFrame -- Anchor to the main panel
+                    getgenv().AutoKillGUI = autoKillFrame -- Assign to global to be able to close it
+
+                    local title = Instance.new("TextLabel")
+                    title.Size = UDim2.new(1, 0, 0, 30)
+                    title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                    title.Text = "☠️ AutoKill Selector"
+                    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    title.Font = Enum.Font.SourceSansBold
+                    title.TextSize = 20
+                    title.Parent = autoKillFrame
+
+                    local scrollingFrame = Instance.new("ScrollingFrame")
+                    scrollingFrame.Size = UDim2.new(1, 0, 1, -30)
+                    scrollingFrame.Position = UDim2.new(0, 0, 0, 30)
+                    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+                    scrollingFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+                    scrollingFrame.ScrollBarThickness = 6
+                    scrollingFrame.BorderSizePixel = 0
+                    scrollingFrame.Parent = autoKillFrame
+                    
+                    local listLayout = Instance.new("UIListLayout", scrollingFrame)
+                    listLayout.Padding = UDim.new(0, 5)
+                    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+                    -- Function to create buttons per player
+                    local function updatePlayerButtons()
+                        -- Clear only the buttons
+                        for _, v in ipairs(scrollingFrame:GetChildren()) do
+                            if v:IsA("TextButton") then
+                                v:Destroy()
+                            end
+                        end
+
+                        for _, plr in ipairs(Players:GetPlayers()) do
+                            if plr ~= LocalPlayer then
+                                local button = Instance.new("TextButton")
+                                button.Size = UDim2.new(1, -10, 0, 30)
+								button.Position = UDim2.new(0, 5, 0, 0) -- Position managed by UIListLayout
+                                button.BackgroundColor3 = getgenv().AutoKillTargets[plr.Name] and Color3.fromRGB(150, 0, 0) or Color3.fromRGB(70, 70, 70)
+                                button.Text = plr.Name
+                                button.TextColor3 = Color3.fromRGB(255, 255, 255)
+                                button.Font = Enum.Font.SourceSans
+                                button.TextSize = 18
+                                button.BorderSizePixel = 0
+                                button.Parent = scrollingFrame
+
+                                -- Activate/Deactivate target on click
+                                button.MouseButton1Click:Connect(function()
+                                    if getgenv().AutoKillTargets[plr.Name] then
+                                        getgenv().AutoKillTargets[plr.Name] = nil
+                                    else
+                                        getgenv().AutoKillTargets[plr.Name] = true
+                                    end
+                                    updatePlayerButtons() -- Update button color
+                                end)
+                            end
+                        end
+                        -- Update canvas size based on content
+                        scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
+                    end
+
+                    -- Update player list when players join or leave
+                    Players.PlayerAdded:Connect(updatePlayerButtons)
+                    Players.PlayerRemoving:Connect(function(player)
+                        -- If the leaving player was a target, remove them
+                        if getgenv().AutoKillTargets[player.Name] then
+                            getgenv().AutoKillTargets[player.Name] = nil
+                        end
+                        updatePlayerButtons()
                     end)
+                    updatePlayerButtons() -- Initial call to populate the list
 
-                    yOffset = yOffset + 35
-                end
-            end
-            scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
-        end
+                    -- Function to get the hand
+                    local function getHand()
+                        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                        return char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
+                    end
 
-        -- Actualizar lista de jugadores al entrar o salir
-        Players.PlayerAdded:Connect(updatePlayerButtons)
-        Players.PlayerRemoving:Connect(updatePlayerButtons)
-        updatePlayerButtons() -- Llamada inicial para poblar la lista
+                    -- Function to hit selected players
+                    local function attackSelectedPlayers()
+                        local hand = getHand()
+                        if not hand or not hand:IsDescendantOf(workspace) then return end
 
-        getgenv().AutoKillGUI = autoKillPanel -- Guardar referencia al panel
-    end
-
-    -- Función para obtener la mano
-    local function getHand()
-        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        [cite_start]return char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm") [cite: 41]
-    end
-
-    -- Función para golpear a los seleccionados
-    local function attackSelectedPlayers()
-        local hand = getHand()
-        if not hand or not hand:IsDescendantOf(workspace) then return end
-
-        for _, targetName in pairs(getgenv().AutoKillTargets) do -- Iterar sobre los nombres de los targets seleccionados
-            if getgenv().AutoKillTargets[targetName] then -- Verificar si el target está marcado como true
-                local targetPlayer = Players:FindFirstChild(targetName) -- Obtener el objeto Player real
-                if targetPlayer and targetPlayer.Character then
-                    [cite_start]local root = targetPlayer.Character:FindFirstChild("HumanoidRootPart") [cite: 43]
-                    if root and root:IsDescendantOf(workspace) then
-                        for _ = 1, 2 do
-                            [cite_start]firetouchinterest(hand, root, 0) [cite: 44]
-                            task.wait(0.01)
-                            [cite_start]firetouchinterest(hand, root, 1) [cite: 45]
+                        for _, target in pairs(Players:GetPlayers()) do
+                            if getgenv().AutoKillTargets[target.Name] and target.Character then
+                                local root = target.Character:FindFirstChild("HumanoidRootPart")
+                                if root and root:IsDescendantOf(workspace) then
+                                    for _ = 1, 2 do
+                                        firetouchinterest(hand, root, 0)
+                                        task.wait(0.01)
+                                        firetouchinterest(hand, root, 1)
+                                    end
+                                end
+                            end
                         end
                     end
+
+                    -- Attack loop
+                    task.spawn(function()
+                        while getgenv().AutoKillEnabled do
+                            pcall(attackSelectedPlayers)
+                            task.wait(0.08)
+                        end
+                    end)
                 end
-            end
+                -- ############# END OF MODIFIED CODE #############
+                
+                -- Espectear: Panel integrado al lado del botón "Espectear"
+                if name == "Espectear" then
+                    -- Toggle existente
+                    if getgenv().SpectatePanel and getgenv().SpectatePanel.Parent then
+                        getgenv().SpectatePanel:Destroy()
+                        getgenv().SpectatePanel = nil
+                        getgenv().CurrentlySpectating = nil
+                        return
+                    end
+                
+                    local Players = game:GetService("Players")
+                    local RunService = game:GetService("RunService")
+                    local LocalPlayer = Players.LocalPlayer
+                    local Camera = workspace.CurrentCamera
+                
+                    -- Obtener contenedor y posición del botón
+                    local container = btn.Parent
+                    local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
+                    local panelOffsetY = ContentPanel.Position.Y.Offset + container.Position.Y.Offset
+                
+                    -- Crear panel
+                    local gui = Instance.new("Frame")
+                    gui.Name = "SpectatePanel"
+                    gui.Size = UDim2.new(0, 400, 0, 300)
+                    gui.Position = UDim2.new(0, panelOffsetX, 0, panelOffsetY)
+                    gui.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+                    gui.BorderSizePixel = 0
+                    gui.Active = true
+                    gui.Parent = MainFrame
+                    Instance.new("UICorner", gui)
+                
+                    -- ScrollingFrame
+                    local scroll = Instance.new("ScrollingFrame")
+                    scroll.Size = UDim2.new(1, -20, 1, -20)
+                    scroll.Position = UDim2.new(0, 10, 0, 10)
+                    scroll.BackgroundTransparency = 1
+                    scroll.ScrollBarThickness = 6
+                    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+                    scroll.Active = true
+                    scroll.Parent = gui
+                
+                    local layout = Instance.new("UIListLayout", scroll)
+                    layout.Padding = UDim.new(0, 6)
+                    layout.SortOrder = Enum.SortOrder.Name
+                
+                    -- Scroll con rueda del mouse/touch
+                    scroll.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseWheel then
+                            scroll.CanvasPosition = scroll.CanvasPosition + Vector2.new(0, -input.Position.Z * 30)
+                        end
+                    end)
+                
+                    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+                    end)
+                
+                    -- Botones de jugadores
+                    local buttons = {}
+                    local function createBtn(player)
+                        local b = Instance.new("TextButton")
+                        b.Size = UDim2.new(1, 0, 0, 36)
+                        b.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+                        b.TextColor3 = Color3.new(1, 1, 1)
+                        b.Font = Enum.Font.Gotham
+                        b.TextSize = 14
+                        b.Text = player.DisplayName
+                        b.BorderSizePixel = 0
+                        b.AutoButtonColor = false
+                        Instance.new("UICorner", b)
+                        
+                        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 100, 100) end)
+                        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(70, 70, 70) end)
+                        b.MouseButton1Click:Connect(function() getgenv().CurrentlySpectating = player end)
+                        
+                        b.Parent = scroll
+                        buttons[player] = b
+                    end
+                    local function removeBtn(player)
+                        if buttons[player] then buttons[player]:Destroy() buttons[player] = nil end
+                    end
+                
+                    -- Botón volver a mí
+                    local function createReturnBtn()
+                        local b = Instance.new("TextButton")
+                        b.Size = UDim2.new(1, 0, 0, 36)
+                        b.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+                        b.TextColor3 = Color3.new(1, 1, 1)
+                        b.Font = Enum.Font.GothamBold
+                        b.TextSize = 14
+                        b.Text = "↩ Volver a mí"
+                        b.BorderSizePixel = 0
+                        b.AutoButtonColor = false
+                        Instance.new("UICorner", b)
+                
+                        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 80, 80) end)
+                        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(80, 60, 60) end)
+                        b.MouseButton1Click:Connect(function()
+                            getgenv().CurrentlySpectating = nil
+                            if LocalPlayer.Character then
+                                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
+                                if hum then Camera.CameraSubject = hum end
+                            end
+                        end)
+                        b.Parent = scroll
+                    end
+                
+                    for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createBtn(p) end end
+                    createReturnBtn()
+                    Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then createBtn(p) end end)
+                    Players.PlayerRemoving:Connect(function(p) removeBtn(p) if getgenv().CurrentlySpectating == p then getgenv().CurrentlySpectating = nil end end)
+                
+                    RunService.RenderStepped:Connect(function()
+                        local t = getgenv().CurrentlySpectating
+                        if t and t.Character then
+                            local hum = t.Character:FindFirstChild("Humanoid")
+                            if hum and Camera.CameraSubject ~= hum then Camera.CameraSubject = hum end
+                        end
+                    end)
+                
+                    getgenv().SpectatePanel = gui
+                end
+
+                if name == "Anti AFK" then
+                    local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Anti-AFK-by-ALEJANDRO-/refs/heads/main/Anti%20AFK", true))
+                    if func then func() end
+                end
+            end)
+
+            table.insert(contentButtons, container)
+            y = y + 28
         end
     end
-
-    -- Bucle de ataque (solo iniciar una vez)
-    if not getgenv().AutoKillLoopActive then
-        getgenv().AutoKillLoopActive = true
-        task.spawn(function()
-            while getgenv().AutoKillEnabled do
-                pcall(attackSelectedPlayers)
-                [cite_start]task.wait(0.08) [cite: 46]
-            end
-        end)
-    end
 end
-
--- ... [el resto del script permanece igual arriba]
-
--- Espectear: Panel integrado al lado del botón "Espectear"
-if name == "Espectear" then
-    -- Toggle existente
-    if getgenv().SpectatePanel and getgenv().SpectatePanel.Parent then
-        getgenv().SpectatePanel:Destroy()
-        getgenv().SpectatePanel = nil
-        getgenv().CurrentlySpectating = nil
-        return
-    end
-
- 
-    [cite_start]local Players = game:GetService("Players") [cite: 55]
-    local RunService = game:GetService("RunService")
-    local LocalPlayer = Players.LocalPlayer
-    local Camera = workspace.CurrentCamera
-
-    -- Obtener contenedor y posición del botón
-    local container = btn.Parent
-    local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
-    local panelOffsetY = ContentPanel.Position.Y.Offset + container.Position.Y.Offset
-
-    -- Crear panel
-    local gui = Instance.new("Frame")
-    gui.Name = "SpectatePanel"
-    gui.Size = UDim2.new(0, 400, 0, 300)
-    [cite_start]gui.Position = UDim2.new(0, panelOffsetX, 0, panelOffsetY) [cite: 56]
-    gui.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    gui.BorderSizePixel = 0
-    gui.Active = true
-    gui.Parent = MainFrame
-    Instance.new("UICorner", gui)
-
-    -- ScrollingFrame
-    local scroll = Instance.new("ScrollingFrame")
-    scroll.Size = UDim2.new(1, -20, 1, -20)
-    scroll.Position = UDim2.new(0, 10, 0, 10)
-    scroll.BackgroundTransparency = 1
-    scroll.ScrollBarThickness = 6
-    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scroll.Active = true
-    scroll.Parent = gui
-
-    [cite_start]local layout = Instance.new("UIListLayout", scroll) [cite: 57]
-    layout.Padding = UDim.new(0, 6)
-    layout.SortOrder = Enum.SortOrder.Name
-
-    -- Scroll con rueda del mouse/touch
-    scroll.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseWheel then
-            scroll.CanvasPosition = scroll.CanvasPosition + Vector2.new(0, -input.Position.Z * 30)
-        end
-    end)
-
-    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
-    end)
-
-    [cite_start]-- Botones de jugadores [cite: 58]
-    local buttons = {}
-    local function createBtn(player)
-        local b = Instance.new("TextButton")
-        b.Size = UDim2.new(1, 0, 0, 36)
-        b.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-        b.TextColor3 = Color3.new(1, 1, 1)
-        b.Font = Enum.Font.Gotham
-        b.TextSize = 14
-        b.Text = player.DisplayName
-        [cite_start]b.BorderSizePixel = 0 [cite: 59]
-        b.AutoButtonColor = false
-        Instance.new("UICorner", b)
-        
-        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 100, 100) end)
-        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(70, 70, 70) end)
-        b.MouseButton1Click:Connect(function() getgenv().CurrentlySpectating = player end)
-        
-        b.Parent = scroll
-        buttons[player] = b
-    
-    [cite_start]end [cite: 60]
-    local function removeBtn(player)
-        if buttons[player] then buttons[player]:Destroy() buttons[player] = nil end
-    end
-
-    -- Botón volver a mí
-    local function createReturnBtn()
-        local b = Instance.new("TextButton")
-        b.Size = UDim2.new(1, 0, 0, 36)
-        b.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
-        b.TextColor3 = Color3.new(1, 1, 1)
-        b.Font = Enum.Font.GothamBold
-   
-        [cite_start]b.TextSize = 14 [cite: 61]
-        b.Text = "â†© Volver a mí"
-        b.BorderSizePixel = 0
-        b.AutoButtonColor = false
-        Instance.new("UICorner", b)
-
-        b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(100, 80, 80) end)
-        b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(80, 60, 60) end)
-        b.MouseButton1Click:Connect(function()
-            getgenv().CurrentlySpectating = nil
- 
-            [cite_start]if LocalPlayer.Character then [cite: 62]
-                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
-                if hum then Camera.CameraSubject = hum end
-            end
-        end)
-        b.Parent = scroll
-    end
-
-    [cite_start]for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createBtn(p) end end [cite: 63]
-    createReturnBtn()
-    Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then createBtn(p) end end)
-    Players.PlayerRemoving:Connect(function(p) removeBtn(p) if getgenv().CurrentlySpectating == p then getgenv().CurrentlySpectating = nil end end)
-
-    RunService.RenderStepped:Connect(function()
-        local t = getgenv().CurrentlySpectating
-        if t and t.Character then
-            local hum = t.Character:FindFirstChild("Humanoid")
-            [cite_start]if hum and Camera.CameraSubject ~= hum then Camera.CameraSubject = hum [cite: 64] end
-        end
-    end)
-
-    getgenv().SpectatePanel = gui
-end
-
-          if name == "Anti AFK" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Anti-AFK-by-ALEJANDRO-/refs/heads/main/Anti%20AFK", true))
-             if func then func() end
-         end
-end)
-
-        table.insert(contentButtons, container)
-        y = y + 28
-   
-    [cite_start]end [cite: 65]
-end
-
--- Crear pestañas
-local x = 0
-for _, name in ipairs(tabs) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 96, 0, 25)
-    btn.Position = UDim2.new(0, x, 0, 0)
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.Parent = TabPanel
-    btn.MouseButton1Click:Connect(function() switchTab(name) end)
-    tabButtons[name] = btn
-    x = x + 100
-end
-
 
 -- Panel adicional para contador personal en Stats
-[cite_start]local personalStatsPanel = Instance.new("Frame") [cite: 66]
+local personalStatsPanel = Instance.new("Frame")
 personalStatsPanel.Size = UDim2.new(0, 195, 0, 100)
 personalStatsPanel.Position = UDim2.new(0, 10, 0, 40 + (#(contentByTab["Stats"]) * 28))
 personalStatsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -823,7 +742,7 @@ local RunService = game:GetService("RunService")
 local function getStat(name)
 	local stats = player:FindFirstChild("leaderstats") or player:FindFirstChild("PlayerStats")
 	local stat = stats and stats:FindFirstChild(name)
-	[cite_start]return stat or player:FindFirstChild(name) [cite: 67]
+	return stat or player:FindFirstChild(name)
 end
 
 local strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
@@ -853,7 +772,7 @@ RunService.RenderStepped:Connect(function()
 	tiempoLabel.Text = string.format("Tiempo: %02d:%02d:%02d", h, m, s)
 	fuerzaLabel.Text = "Fuerza ganada: " .. abreviarNumero(fuerza)
 	durabilidadLabel.Text = "Durabilidad ganada: " .. abreviarNumero(dura)
-	[cite_start]renacimientosLabel.Text = "Renacimientos ganados: " .. tostring(rebirths) [cite: 68]
+	renacimientosLabel.Text = "Renacimientos ganados: " .. tostring(rebirths)
 end)
 
 -- Mostrar solo si estás en pestaña "Stats"
@@ -872,12 +791,11 @@ local isMinimized = false
 MinButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     MinButton.Text = isMinimized and "+" or "-"
-    MainFrame.Size = UDim2.new(0, 700, 0, isMinimized and minimizedHeight or fullHeight)
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(MainFrame, tweenInfo, {Size = UDim2.new(0, 700, 0, isMinimized and minimizedHeight or fullHeight)})
+    tween:Play()
+    
     TabPanel.Visible = not isMinimized
     ContentPanel.Visible = not isMinimized
-    statsPanel.Visible = not isMinimized and (currentTab == "Stats" or buttonStates["Stats_Check Stats"])
-    -- Actualizar visibilidad del panel de AutoKill si existe
-    if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI.Visible = not isMinimized and (currentTab == "Killing" and buttonStates["Killing_Auto Kill Players"])
-    end
+    statsPanel.Visible = not isMinimized and (currentTab == "Stats" and buttonStates["Stats_Check Stats"])
 end)
