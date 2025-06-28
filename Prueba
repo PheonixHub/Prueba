@@ -701,13 +701,17 @@ if name == "Espectear" then
     Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then createBtn(p) end end)
     Players.PlayerRemoving:Connect(function(p) removeBtn(p) if getgenv().CurrentlySpectating == p then getgenv().CurrentlySpectating = nil end end)
 
-    RunService.RenderStepped:Connect(function()
-        local t = getgenv().CurrentlySpectating
-        if t and t.Character then
-            local hum = t.Character:FindFirstChild("Humanoid")
-            if hum and Camera.CameraSubject ~= hum then Camera.CameraSubject = hum end
-        end
-    end)
+  LocalPlayer.CharacterAdded:Connect(function()
+	task.wait(1)
+	if currentlySpectating then
+		local char = currentlySpectating.Character
+		if char then
+			local hum = char:FindFirstChild("Humanoid")
+			if hum then
+				Camera.CameraSubject = hum
+			end
+		end
+	end
 
     getgenv().SpectatePanel = gui
 end
