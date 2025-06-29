@@ -114,14 +114,18 @@ ContentPanel.Size = UDim2.new(1, 0, 1, -55)
 ContentPanel.Position = UDim2.new(0, 0, 0, 55)
 ContentPanel.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
 
--- Sistema de paneles persistentes
 local persistentPanels = {}
 
-local function registerPersistentPanel(name, panel)
-    persistentPanels[name] = panel
+local function togglePanel(name, createFunc)
+    if persistentPanels[name] then
+        persistentPanels[name].Visible = not persistentPanels[name].Visible
+    else
+        local panel = createFunc()
+        persistentPanels[name] = panel
+    end
 end
 
-local function clearContentExceptPersistent()
+local function clearNonPersistentContent()
     for _, child in ipairs(ContentPanel:GetChildren()) do
         if not persistentPanels[child.Name] then
             child:Destroy()
@@ -130,7 +134,7 @@ local function clearContentExceptPersistent()
 end
 
 local function showPersistentPanels()
-    for _, panel in pairs(persistentPanels) do
+    for name, panel in pairs(persistentPanels) do
         panel.Visible = true
         panel.Parent = ContentPanel
     end
@@ -256,106 +260,8 @@ local function animateIndicator(indicator, isActive)
 end
 
 -- Cambiar de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
-
 local function switchTab(tabName)
-    clearContentExceptPersistent()
     if currentTab == tabName then return end
-    currentTab = tabName
-    statsPanel.Visible = false
-    for idx, option in ipairs(contentByTab[tabName] or {}) do
-        local container = Instance.new("Frame")
-        container.Size = UDim2.new(0,195,0,25)
-        container.Position = UDim2.new(0,10,0,10+(idx-1)*28)
-        container.BackgroundTransparency = 1
-        container.Parent = ContentPanel
-
-        local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(1,0,1,0)
-        btn.BackgroundColor3 = Color3.fromRGB(70,70,70)
-        btn.Text = option
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Parent = container
-
-        btn.MouseButton1Click:Connect(function()
-            local key = tabName .. "_" .. option
-            buttonStates[key] = not buttonStates[key]
-
-            if option == "Check Stats" then
-                statsPanel.Visible = buttonStates[key]
-            elseif option == "Auto Kill Players" then
-                if _G.AutoKillGUI and _G.AutoKillGUI.Parent then
-                    _G.AutoKillGUI.Visible = not _G.AutoKillGUI.Visible
-                else
-                    local gui = Instance.new("ScrollingFrame")
-                    gui.Name = "AutoKillGUI"
-                    gui.Size = UDim2.new(0,300,0,300)
-                    gui.Position = UDim2.new(0,300,0,55)
-                    gui.BackgroundColor3 = Color3.fromRGB(30,30,30)
-                    gui.ScrollBarThickness = 6
-                    gui.Parent = ContentPanel
-                    registerPersistentPanel("AutoKillGUI", gui)
-
-                    _G.AutoKillTargets = _G.AutoKillTargets or {}
-                    local layout = Instance.new("UIListLayout", gui)
-                    layout.Padding = UDim.new(0,5)
-
-                    local function updateList()
-                        gui:ClearAllChildren()
-                        for _, p in ipairs(Players:GetPlayers()) do
-                            if p ~= Players.LocalPlayer then
-                                local btnP = Instance.new("TextButton", gui)
-                                btnP.Size = UDim2.new(1,0,0,25)
-                                btnP.Text = p.Name
-                                btnP.BackgroundColor3 = _G.AutoKillTargets[p.Name] and Color3.fromRGB(150,0,0) or Color3.fromRGB(70,70,70)
-                                btnP.TextColor3 = Color3.new(1,1,1)
-                                btnP.MouseButton1Click:Connect(function()
-                                    _G.AutoKillTargets[p.Name] = not _G.AutoKillTargets[p.Name]
-                                    updateList()
-                                end)
-                            end
-                        end
-                        gui.CanvasSize = UDim2.new(0,0,0,#Players:GetPlayers()*30)
-                    end
-
-                    updateList()
-                    Players.PlayerAdded:Connect(updateList)
-                    Players.PlayerRemoving:Connect(updateList)
-
-                    if not _G.AutoKillLoop then
-                        _G.AutoKillLoop = true
-                        task.spawn(function()
-                            while _G.AutoKillLoop do
-                                local hand = (Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()):FindFirstChild("RightHand") or (Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()):FindFirstChild("Right Arm")
-                                if hand then
-                                    for targetName, enabled in pairs(_G.AutoKillTargets) do
-                                        local target = Players:FindFirstChild(targetName)
-                                        local root = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-                                        if enabled and root then
-                                            for i=1,2 do
-                                                firetouchinterest(hand, root, 0)
-                                                task.wait(0.01)
-                                                firetouchinterest(hand, root, 1)
-                                            end
-                                        end
-                                    end
-                                end
-                                task.wait(0.08)
-                            end
-                        end)
-                    end
-                end
-            elseif option == "Espectear" then
-                if getgenv().SpectatePanel then
-                    getgenv().SpectatePanel.Visible = not getgenv().SpectatePanel.Visible
-                else
-                    -- (AquÃ­ irÃ­a tu lÃ³gica de creaciÃ³n del panel Espectear)
-                end
-            end
-        end)
-    end
-    showPersistentPanels()
-end
-
     currentTab = tabName
     lastTab = tabName
 
