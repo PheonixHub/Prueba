@@ -1,3 +1,74 @@
+-- IntegraciÃ³n FastRebirth + Bugs dentro de PHEONIX HUB
+-- FunciÃ³n que crea el panel de Fast Rebirth junto al botÃ³n
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local function fastRebirthScript(container)
+    if getgenv().FastRebirthPanel then
+        getgenv().FastRebirthPanel:Destroy()
+        getgenv().FastRebirthPanel = nil
+        return
+    end
+    local a = game:GetService("ReplicatedStorage")
+    local player = Players.LocalPlayer
+
+    -- Panel al lado del botÃ³n
+    local panel = Instance.new("Frame")
+    panel.Name = "FastRebirthPanel"
+    local offsetX = container.Position.X.Offset + container.Size.X.Offset + 5
+    local offsetY = container.Position.Y.Offset
+    panel.Position = UDim2.new(0, offsetX, 0, offsetY)
+    panel.Size = UDim2.new(0, 200, 0, 120)
+    panel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    panel.BorderSizePixel = 0
+    panel.Parent = container.Parent.Parent -- MainFrame
+    Instance.new("UICorner", panel)
+
+    -- Toggle button
+    local toggle = Instance.new("TextButton")
+    toggle.Size = UDim2.new(1, -20, 0, 30)
+    toggle.Position = UDim2.new(0, 10, 0, 10)
+    toggle.Text = "Iniciar FastRebirth"
+    toggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    toggle.TextColor3 = Color3.new(1,1,1)
+    toggle.Parent = panel
+
+    -- Status label
+    local status = Instance.new("TextLabel")
+    status.Size = UDim2.new(1, -20, 0, 20)
+    status.Position = UDim2.new(0, 10, 0, 50)
+    status.Text = "Estado: Detenido"
+    status.BackgroundTransparency = 1
+    status.TextColor3 = Color3.new(1,1,1)
+    status.Parent = panel
+
+    local running = false
+    toggle.MouseButton1Click:Connect(function()
+        running = not running
+        if running then
+            toggle.Text = "Detener FastRebirth"
+            status.Text = "Estado: En ejecuciÃ³n"
+            task.spawn(function()
+                while running do
+                    for i = 1, 10 do
+                        a.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+                        task.wait(0.1)
+                    end
+                end
+                toggle.Text = "Iniciar FastRebirth"
+                status.Text = "Estado: Detenido"
+            end)
+        else
+            toggle.Text = "Iniciar FastRebirth"
+            status.Text = "Estado: Detenido"
+        end
+    end)
+
+    getgenv().FastRebirthPanel = panel
+end
+
+-- Hook en la creaciÃ³n de botones del menÃº
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -62,8 +133,8 @@ UICorner2.CornerRadius = UDim.new(0, 6)
 local tabs = {"OpFarmeo", "Stats", "Killing", "Players", "Rocas", "Teleport", "Creditos"}
 local contentByTab = {
     ["OpFarmeo"] = {"Fast Rebith + Bugs", "Auto Fuerza Op", "Auto Fuerza", "Protein egg", "Ocultar Particulas"},
-    ["Killing"] = {"Auto Punch", "Auto Kill All", "Auto Kill Players", "Kills Muerto"},
     ["Stats"] = {"Check Stats"},
+    ["Killing"] = {"Auto Punch", "Auto Kill All"},
     ["Players"] = {"Lock Client Position", "Anti AFK", "Espectear"},
     ["Rocas"] = {
         "Roca de 10m", "Roca de 5m", "Roca de 1m",
@@ -80,7 +151,7 @@ local currentTab = nil
 local tabButtons = {}
 local contentButtons = {}
 
--- Panel de pestaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±as adaptado
+-- Panel de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as adaptado
 local TabPanel = Instance.new("Frame")
 TabPanel.Size = UDim2.new(1, 0, 0, 30)
 TabPanel.Position = UDim2.new(0, 0, 0, 30)
@@ -115,7 +186,7 @@ ContentPanel.Position = UDim2.new(0, 0, 0, 55)
 ContentPanel.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
 ContentPanel.Parent = MainFrame
 
--- Panel de estadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas integrado (600x300 dentro del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº)
+-- Panel de estadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas integrado (600x300 dentro del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº)
 local statsPanel = Instance.new("ScrollingFrame")
 statsPanel.Position = UDim2.new(0, 220, 0, 55)
 statsPanel.Size = UDim2.new(0, 380, 1, -65)
@@ -167,7 +238,7 @@ local function updateLine(player, strength, durability, rebirths)
 end
 
 
--- FunciÃƒÆ’Ã‚Â³n para abreviar nÃƒÆ’Ã‚Âºmeros
+-- FunciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n para abreviar nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmeros
 local function abreviarNumero(num)
 	local abreviaciones = {
 		{valor = 1e15, sufijo = "Qa"},
@@ -184,7 +255,7 @@ local function abreviarNumero(num)
 	return tostring(num or "0")
 end
 
--- Actualizar lÃƒÆ’Ã‚Â­nea con fuerza/durabilidad abreviada
+-- Actualizar lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­nea con fuerza/durabilidad abreviada
 local function updateLine(player, strength, durability, rebirths)
     if not playerLines[player] then
         local label = Instance.new("TextLabel")
@@ -224,7 +295,7 @@ Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
--- AnimaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n del indicador
+-- AnimaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n del indicador
 local function animateIndicator(indicator, isActive)
     local goalColor = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 50, 50)
     local goalText = isActive and "âœ“" or "X"
@@ -232,7 +303,7 @@ local function animateIndicator(indicator, isActive)
     TweenService:Create(indicator, TweenInfo.new(0.25), {TextColor3 = goalColor}):Play()
 end
 
--- Cambiar de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
+-- Cambiar de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
 local function switchTab(tabName)
     if currentTab == tabName then return end
     currentTab = tabName
@@ -380,11 +451,7 @@ if name == "Tp king" then
              if func then func() end
          end
 
-         if name == "Fast Rebith + Bugs" then
-             local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Fast-Rebith-/refs/heads/main/Fast%20rebith", true))()
-             if func then func() end
-         end
-
+       
          if name == "Golpe Sin Animacion" then
              local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/CTXxALEJANDROxX/Fast-Rebith-/refs/heads/main/Fast%20rebith", true))()
              if func then func() end
@@ -514,11 +581,11 @@ if name == "Auto Kill Players" then
         getgenv().AutoKillGUI:Destroy()
         getgenv().AutoKillGUI = nil
         getgenv().AutoKillLoop = false
-        print("Ã°Å¸â€ºâ€˜ Panel AutoKill cerrado")
+        print("ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ¢â‚¬Ëœ Panel AutoKill cerrado")
         return
     end
 
-    print("Ã¢Ëœ Ã¯Â¸Â Panel AutoKill ACTIVADO")
+    print("ÃƒÂ¢Ã‹Å“ ÃƒÂ¯Ã‚Â¸Ã‚Â Panel AutoKill ACTIVADO")
 
     local gui = Instance.new("ScrollingFrame")
     gui.Name = "AutoKillGUI"
@@ -590,7 +657,7 @@ end
 
 -- ... [el resto del script permanece igual arriba]
 
--- Espectear: Panel integrado al lado del botÃƒÂ³n "Espectear"
+-- Espectear: Panel integrado al lado del botÃƒÆ’Ã‚Â³n "Espectear"
 if name == "Espectear" then
     -- Toggle existente
     if getgenv().SpectatePanel and getgenv().SpectatePanel.Parent then
@@ -605,7 +672,7 @@ if name == "Espectear" then
     local LocalPlayer = Players.LocalPlayer
     local Camera = workspace.CurrentCamera
 
-    -- Obtener contenedor y posiciÃƒÂ³n del botÃƒÂ³n
+    -- Obtener contenedor y posiciÃƒÆ’Ã‚Â³n del botÃƒÆ’Ã‚Â³n
     local container = btn.Parent
     local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
     local panelOffsetY = ContentPanel.Position.Y.Offset + container.Position.Y.Offset
@@ -671,7 +738,7 @@ if name == "Espectear" then
         if buttons[player] then buttons[player]:Destroy() buttons[player] = nil end
     end
 
-    -- BotÃƒÂ³n volver a mÃƒÂ­
+    -- BotÃƒÆ’Ã‚Â³n volver a mÃƒÆ’Ã‚Â­
     local function createReturnBtn()
         local b = Instance.new("TextButton")
         b.Size = UDim2.new(1, 0, 0, 36)
@@ -679,7 +746,7 @@ if name == "Espectear" then
         b.TextColor3 = Color3.new(1, 1, 1)
         b.Font = Enum.Font.GothamBold
         b.TextSize = 14
-        b.Text = "Ã¢â€ Â© Volver a mÃƒÂ­"
+        b.Text = "ÃƒÂ¢Ã¢â‚¬ Ã‚Â© Volver a mÃƒÆ’Ã‚Â­"
         b.BorderSizePixel = 0
         b.AutoButtonColor = false
         Instance.new("UICorner", b)
@@ -724,7 +791,7 @@ end)
     end
 end
 
--- Crear pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as
+-- Crear pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as
 local x = 0
 for _, name in ipairs(tabs) do
     local btn = Instance.new("TextButton")
@@ -810,15 +877,15 @@ RunService.RenderStepped:Connect(function()
 	renacimientosLabel.Text = "Renacimientos ganados: " .. tostring(rebirths)
 end)
 
--- Mostrar solo si estÃƒÆ’Ã‚Â¡s en pestaÃƒÆ’Ã‚Â±a "Stats"
+-- Mostrar solo si estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡s en pestaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a "Stats"
 local originalSwitchTab = switchTab
 switchTab = function(tabName)
 	originalSwitchTab(tabName)
 	personalStatsPanel.Visible = (tabName == "Stats")
 end
--- Activar primera pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
+-- Activar primera pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
 switchTab(lastTab)
--- Minimizar estilo con tamaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±o y ocultar contenido
+-- Minimizar estilo con tamaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±o y ocultar contenido
 local fullHeight = 400
 local minimizedHeight = 25
 local isMinimized = false
