@@ -1,362 +1,82 @@
--- IntegraciÃ³n FastRebirth + Bugs dentro de PHEONIX HUB
--- FunciÃ³n que crea el panel de Fast Rebirth junto al botÃ³n
+-- Servicios
 local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 
-local function fastRebirthScript(container)
-    if getgenv().FastRebirthPanel then
-        getgenv().FastRebirthPanel:Destroy()
-        getgenv().FastRebirthPanel = nil
-        return
-    end
-    local a = game:GetService("ReplicatedStorage")
-    local player = Players.LocalPlayer
-
-    -- Panel al lado del botÃ³n
-    local panel = Instance.new("Frame")
-    panel.Name = "FastRebirthPanel"
-    local offsetX = container.Position.X.Offset + container.Size.X.Offset + 5
-    local offsetY = container.Position.Y.Offset
-    panel.Position = UDim2.new(0, offsetX, 0, offsetY)
-    panel.Size = UDim2.new(0, 200, 0, 120)
-    panel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    panel.BorderSizePixel = 0
-    panel.Parent = container.Parent.Parent -- MainFrame
-    Instance.new("UICorner", panel)
-
-    -- Toggle button
-    local toggle = Instance.new("TextButton")
-    toggle.Size = UDim2.new(1, -20, 0, 30)
-    toggle.Position = UDim2.new(0, 10, 0, 10)
-    toggle.Text = "Iniciar FastRebirth"
-    toggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    toggle.TextColor3 = Color3.new(1,1,1)
-    toggle.Parent = panel
-
-    -- Status label
-    local status = Instance.new("TextLabel")
-    status.Size = UDim2.new(1, -20, 0, 20)
-    status.Position = UDim2.new(0, 10, 0, 50)
-    status.Text = "Estado: Detenido"
-    status.BackgroundTransparency = 1
-    status.TextColor3 = Color3.new(1,1,1)
-    status.Parent = panel
-
-    local running = false
-    toggle.MouseButton1Click:Connect(function()
-        running = not running
-        if running then
-            toggle.Text = "Detener FastRebirth"
-            status.Text = "Estado: En ejecuciÃ³n"
-            task.spawn(function()
-                while running do
-                    for i = 1, 10 do
-                        a.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
-                        task.wait(0.1)
-                    end
-                end
-                toggle.Text = "Iniciar FastRebirth"
-                status.Text = "Estado: Detenido"
-            end)
-        else
-            toggle.Text = "Iniciar FastRebirth"
-            status.Text = "Estado: Detenido"
-        end
-    end)
-
-    getgenv().FastRebirthPanel = panel
-end
-
--- Hook en la creaciÃ³n de botones del menÃº
-local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
--- GUI principal
+-- Crear GUI principal
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ALEJANDRO PAID"
+ScreenGui.Name = "SCRIPT DEATH HUNTERS"
 pcall(function() ScreenGui.Parent = game.CoreGui end)
 
--- Estados y control global
-local buttonStates = {}
-local lastTab = "OpFarmeo"
-_G.Locking = false
-_G.lockPosition = false
-
--- Frame principal
+-- Frame principal del menú
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 700, 0, 400)
-MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.Size            = UDim2.new(0, 625, 0, 500)
+MainFrame.Position        = UDim2.new(0.5, -300, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.ClipsDescendants = true
+MainFrame.Parent          = ScreenGui
+MainFrame.Active          = true
+MainFrame.Draggable       = true
 
-local UICorner = Instance.new("UICorner", MainFrame)
-UICorner.CornerRadius = UDim.new(0, 12)
-
--- Barra superior
-local TitleBar = Instance.new("Frame")
-TitleBar.Size = UDim2.new(1, 0, 0, 30)
-TitleBar.Position = UDim2.new(0, 0, 0, 0)
-TitleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-TitleBar.BorderSizePixel = 0
-TitleBar.Parent = MainFrame
-
+-- Título del menú
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -30, 1, 0)
-Title.Position = UDim2.new(0, 10, 0, 0)
-Title.BackgroundTransparency = 1
-Title.Text = "PHEONIX HUB"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Parent = TitleBar
+Title.Size             = UDim2.new(1, 0, 0, 25)
+Title.Position         = UDim2.new(0, 0, 0, 0)
+Title.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Title.Text             = "SCRIPT DEATH HUNTERS"
+Title.TextColor3       = Color3.fromRGB(255, 255, 255)
+Title.Font             = Enum.Font.SourceSansBold
+Title.TextSize         = 15
+Title.Parent           = MainFrame
 
+-- Botón minimizar
 local MinButton = Instance.new("TextButton")
-MinButton.Size = UDim2.new(0, 30, 1, 0)
-MinButton.Position = UDim2.new(1, -30, 0, 0)
-MinButton.Text = "-"
-MinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-MinButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-MinButton.Font = Enum.Font.Gotham
-MinButton.TextSize = 18
-MinButton.Parent = TitleBar
-local UICorner2 = Instance.new("UICorner", MinButton)
-UICorner2.CornerRadius = UDim.new(0, 6)
+MinButton.Size             = UDim2.new(0, 25, 0, 25)
+MinButton.Position         = UDim2.new(0, 1, 0, 0)
+MinButton.Text             = "-"
+MinButton.TextColor3       = Color3.fromRGB(255, 255, 255)
+MinButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+MinButton.Parent           = MainFrame
 
--- Tabs y contenido
-local tabs = {"OpFarmeo", "Stats", "Killing", "Players", "Rocas", "Teleport", "Creditos"}
+-- Botón flotante para restaurar con imagen
+local RestoreButton = Instance.new("ImageButton")
+RestoreButton.Name               = "RestoreButton"
+RestoreButton.Size               = UDim2.new(0, 50, 0, 50)
+RestoreButton.Position           = UDim2.new(0, 10, 0, 10)
+RestoreButton.BackgroundTransparency = 1
+RestoreButton.Image              = "rbxthumb://type=Asset&id=104353617054305&w=420&h=420"
+RestoreButton.Visible            = false
+RestoreButton.Active             = true
+RestoreButton.Draggable          = true
+RestoreButton.Parent             = ScreenGui
+
+-- Datos de pestañas y contenido
+local tabs = {"OpFarmeo", "Auto Mascotas", "Stats", "Matar", "Teleports", "Rocas", "Creditos"}
 local contentByTab = {
-    ["OpFarmeo"] = {"Fast Rebith", "Auto Fuerza Op", "Auto Fuerza", "Protein egg", "Ocultar Particulas"},
-    ["Stats"] = {"Check Stats"},
-    ["Killing"] = {"Auto Punch", "Auto Kill All"},
-    ["Players"] = {"Lock Client Position", "Anti AFK", "Espectear"},
-    ["Rocas"] = {
-        "Roca de 10m", "Roca de 5m", "Roca de 1m",
-        "Roca de 750k", "Roca de 400k", "Roca de 150k",
-        "Roca de 5k", "Roca de 100", "Roca de 10", "Roca de 0"},
-    ["Teleport"] = {"Tp 0 Rebiths", "Tp 1 Rebith", "Tp 5 Rebiths", "Tp 15 Rebiths", "Tp 30 Rebiths", "Tp king", "Tp jungla gym"},
-    ["Creditos"] = {
-        "username: Demon_misteriousX",
-        "nombre: XxAlejandroxX"
-    }
+    OpFarmeo     = {"Auto Fuerza", "Auto Fuerza/Dura", "Fast Rebith", "Ocultar Particulas", "Anti AFK"},
+    ["Auto Mascotas"] = {"Abrir Huevo", "Eliminar Mascotas"},
+    Matar        = {"Auto Golpe", "Auto kill A Todos", "Auto Kill Jugadores", "No matar"},
+    Stats        = {"Estadisticas"},
+    Teleports    = {"TP Tiny Island", "Mythical Gym", "Eternal Gym", "Legends Gym", "Muscle King", "Jungla Gym", "TP Frost Gym"},
+    Rocas        = {"Roca 0", "Roca 100", "Roca 5k", "Roca 150k", "Roca 400k", "Roca 750k", "Roca 1m", "Roca 5m", "Roca 10m"},
 }
 
-local currentTab = nil
-local tabButtons = {}
-local contentButtons = {}
+-- Tabla de estados persistentes para toggles
+local states = {}
 
--- Panel de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as adaptado
+-- Panel de pestañas
 local TabPanel = Instance.new("Frame")
-TabPanel.Size = UDim2.new(1, 0, 0, 30)
-TabPanel.Position = UDim2.new(0, 0, 0, 30)
-TabPanel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-TabPanel.BorderSizePixel = 0
-TabPanel.Parent = MainFrame
-
-local tabCount = #tabs
-for i, name in ipairs(tabs) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1 / tabCount, 0, 1, 0)
-    btn.Position = UDim2.new((i - 1) / tabCount, 0, 0, 0)
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    btn.BorderSizePixel = 0
-    btn.Parent = TabPanel
-
-    btn.MouseButton1Click:Connect(function()
-        switchTab(name)
-    end)
-
-    tabButtons[name] = btn
-end
+TabPanel.Size             = UDim2.new(1, 0, 0, 30)  -- Ajusta el tamaño del panel de pestañas
+TabPanel.Position         = UDim2.new(0, 0, 0, 25)
+TabPanel.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+TabPanel.Parent           = MainFrame
 
 -- Panel de contenido
 local ContentPanel = Instance.new("Frame")
-ContentPanel.Size = UDim2.new(1, 0, 1, -55)
-ContentPanel.Position = UDim2.new(0, 0, 0, 55)
-ContentPanel.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
-ContentPanel.Parent = MainFrame
+ContentPanel.Size             = UDim2.new(1, 0, 1, -55)
+ContentPanel.Position         = UDim2.new(0, 0, 0, 55)
+ContentPanel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ContentPanel.Parent           = MainFrame
 
--- Panel de estadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas integrado (600x300 dentro del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº)
-local statsPanel = Instance.new("ScrollingFrame")
-statsPanel.Position = UDim2.new(0, 220, 0, 55)
-statsPanel.Size = UDim2.new(0, 380, 1, -65)
-
-statsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-statsPanel.BorderSizePixel = 0
-statsPanel.Visible = false
-
-    if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI:Destroy()
-        getgenv().AutoKillGUI = nil
-        getgenv().AutoKillLoop = false
-    end
-
-    if getgenv().SpectatePanel then
-        getgenv().SpectatePanel:Destroy()
-        getgenv().SpectatePanel = nil
-        getgenv().CurrentlySpectating = nil
-    end
-
-statsPanel.ScrollBarThickness = 6
-statsPanel.Parent = MainFrame
-
-local statsLayout = Instance.new("UIListLayout")
-statsLayout.Padding = UDim.new(0, 2)
-statsLayout.Parent = statsPanel
-
-local playerLines = {}
-
-local function updateLine(player, strength, durability, rebirths)
-    if not playerLines[player] then
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -4, 0, 20)
-        label.BackgroundTransparency = 1
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.SourceSans
-        label.TextSize = 14
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = statsPanel
-        playerLines[player] = label
-    end
-
-    playerLines[player].Text = string.format("%s | Fuerza: %s | Dura: %s | Rebirths: %s",
-        player.Name,
-        strength or "N/A",
-        durability or "N/A",
-        rebirths or "N/A"
-    )
-end
-
-
--- FunciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n para abreviar nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmeros
-local function abreviarNumero(num)
-	local abreviaciones = {
-		{valor = 1e15, sufijo = "Qa"},
-		{valor = 1e12, sufijo = "T"},
-		{valor = 1e9,  sufijo = "B"},
-		{valor = 1e6,  sufijo = "M"},
-		{valor = 1e3,  sufijo = "K"},
-	}
-	for _, ab in ipairs(abreviaciones) do
-		if num and num >= ab.valor then
-			return string.format("%.2f%s", num / ab.valor, ab.sufijo)
-		end
-	end
-	return tostring(num or "0")
-end
-
--- Actualizar lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­nea con fuerza/durabilidad abreviada
-local function updateLine(player, strength, durability, rebirths)
-    if not playerLines[player] then
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -4, 0, 20)
-        label.BackgroundTransparency = 1
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.SourceSans
-        label.TextSize = 14
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = statsPanel
-        playerLines[player] = label
-    end
-
-    playerLines[player].Text = string.format("%s | Fuerza: %s | Dura: %s | Rebirths: %s",
-        player.Name,
-        abreviarNumero(strength),
-        abreviarNumero(durability),
-        tostring(rebirths or "N/A")
-    )
-end
-
-RunService.RenderStepped:Connect(function()
-    if not statsPanel.Visible then return end
-    for _, player in pairs(Players:GetPlayers()) do
-        local stats = player:FindFirstChild("leaderstats") or player:FindFirstChild("PlayerStats")
-        local strength = stats and stats:FindFirstChild("Strength") or player:FindFirstChild("Strength")
-        local durability = stats and stats:FindFirstChild("Durability") or player:FindFirstChild("Durability")
-        local rebirths = stats and stats:FindFirstChild("Rebirths") or player:FindFirstChild("Rebirths")
-        updateLine(player, strength and strength.Value, durability and durability.Value, rebirths and rebirths.Value)
-    end
-end)
-
-Players.PlayerRemoving:Connect(function(player)
-    if playerLines[player] then
-        playerLines[player]:Destroy()
-        playerLines[player] = nil
-    end
-end)
-
--- AnimaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n del indicador
-local function animateIndicator(indicator, isActive)
-    local goalColor = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 50, 50)
-    local goalText = isActive and "âœ“" or "X"
-    indicator.Text = goalText
-    TweenService:Create(indicator, TweenInfo.new(0.25), {TextColor3 = goalColor}):Play()
-end
-
--- Cambiar de pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
-local function switchTab(tabName)
-    if currentTab == tabName then return end
-    currentTab = tabName
-    lastTab = tabName
-
-    for _, btn in pairs(contentButtons) do btn:Destroy() end
-    contentButtons = {}
-    statsPanel.Visible = false
-
-    if getgenv().AutoKillGUI then
-        getgenv().AutoKillGUI:Destroy()
-        getgenv().AutoKillGUI = nil
-        getgenv().AutoKillLoop = false
-    end
-
-    if getgenv().SpectatePanel then
-        getgenv().SpectatePanel:Destroy()
-        getgenv().SpectatePanel = nil
-        getgenv().CurrentlySpectating = nil
-    end
-
-
-    
-    if tabName == "Creditos" then
-        local y = 10
-        local lines = {
-            "Este Script fue creado por:",
-            "username: Demon_misteriousX",
-
-            "Siganme en TikTok: @quiensabe_095",
-
-            "Gracias por comprar este Script",
-
-            "Pronto mas Scrips como este y mas Op!"
-        }
-
-        for _, text in ipairs(lines) do
-            local label = Instance.new("TextLabel")
-            label.Size = UDim2.new(0, 400, 0, 20)
-            label.Position = UDim2.new(0, 10, 0, y)
-            label.BackgroundTransparency = 1
-            label.TextColor3 = Color3.fromRGB(0, 0, 0)
-            label.Font = Enum.Font.SourceSans
-            label.TextSize = 16
-            label.TextXAlignment = Enum.TextXAlignment.Left
-            label.Text = text
-            label.Parent = ContentPanel
-            table.insert(contentButtons, label)
-            y = y + 25
-        end
-    else
-local y = 10
-    for _, name in ipairs(contentByTab[tabName] or {}) do
+  for _, name in ipairs(contentByTab[tabName] or {}) do
         local key = tabName .. "_" .. name
         local isActive = buttonStates[key] or false
 
@@ -581,11 +301,11 @@ if name == "Auto Kill Players" then
         getgenv().AutoKillGUI:Destroy()
         getgenv().AutoKillGUI = nil
         getgenv().AutoKillLoop = false
-        print("ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ¢â‚¬Ëœ Panel AutoKill cerrado")
+        print("Ã°Å¸â€ºâ€˜ Panel AutoKill cerrado")
         return
     end
 
-    print("ÃƒÂ¢Ã‹Å“ ÃƒÂ¯Ã‚Â¸Ã‚Â Panel AutoKill ACTIVADO")
+    print("Ã¢Ëœ Ã¯Â¸Â Panel AutoKill ACTIVADO")
 
     local gui = Instance.new("ScrollingFrame")
     gui.Name = "AutoKillGUI"
@@ -657,7 +377,7 @@ end
 
 -- ... [el resto del script permanece igual arriba]
 
--- Espectear: Panel integrado al lado del botÃƒÆ’Ã‚Â³n "Espectear"
+-- Espectear: Panel integrado al lado del botÃƒÂ³n "Espectear"
 if name == "Espectear" then
     -- Toggle existente
     if getgenv().SpectatePanel and getgenv().SpectatePanel.Parent then
@@ -672,7 +392,7 @@ if name == "Espectear" then
     local LocalPlayer = Players.LocalPlayer
     local Camera = workspace.CurrentCamera
 
-    -- Obtener contenedor y posiciÃƒÆ’Ã‚Â³n del botÃƒÆ’Ã‚Â³n
+    -- Obtener contenedor y posiciÃƒÂ³n del botÃƒÂ³n
     local container = btn.Parent
     local panelOffsetX = container.Position.X.Offset + container.Size.X.Offset + 5
     local panelOffsetY = ContentPanel.Position.Y.Offset + container.Position.Y.Offset
@@ -738,7 +458,7 @@ if name == "Espectear" then
         if buttons[player] then buttons[player]:Destroy() buttons[player] = nil end
     end
 
-    -- BotÃƒÆ’Ã‚Â³n volver a mÃƒÆ’Ã‚Â­
+    -- BotÃƒÂ³n volver a mÃƒÂ­
     local function createReturnBtn()
         local b = Instance.new("TextButton")
         b.Size = UDim2.new(1, 0, 0, 36)
@@ -746,7 +466,7 @@ if name == "Espectear" then
         b.TextColor3 = Color3.new(1, 1, 1)
         b.Font = Enum.Font.GothamBold
         b.TextSize = 14
-        b.Text = "ÃƒÂ¢Ã¢â‚¬ Ã‚Â© Volver a mÃƒÆ’Ã‚Â­"
+        b.Text = "Ã¢â€ Â© Volver a mÃƒÂ­"
         b.BorderSizePixel = 0
         b.AutoButtonColor = false
         Instance.new("UICorner", b)
@@ -790,111 +510,185 @@ end)
     end
     end
 end
+-- Variables de control
+local currentTab
+local tabButtons   = {}
+local contentButtons = {}
 
--- Crear pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±as
-local x = 0
-for _, name in ipairs(tabs) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 96, 0, 25)
-    btn.Position = UDim2.new(0, x, 0, 0)
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.Parent = TabPanel
-    btn.MouseButton1Click:Connect(function() switchTab(name) end)
-    tabButtons[name] = btn
-    x = x + 100
+-- Función para cambiar de pestaña
+local function switchTab(tabName)
+    if currentTab == tabName then return end
+    currentTab = tabName
+
+    -- Animar pestañas: hundir activa / levantar el resto
+    for name, data in pairs(tabButtons) do
+        local btn = data.btn
+        local info = data.info
+        if name == tabName then
+            TweenService:Create(btn, TweenInfo.new(0.1), {
+                Size     = info.pressedSize,
+                Position = info.pressedPos,
+            }):Play()
+        else
+            TweenService:Create(btn, TweenInfo.new(0.1), {
+                Size     = info.origSize,
+                Position = info.origPos,
+            }):Play()
+        end
+    end
+
+    -- Limpiar contenido anterior
+    for _, obj in ipairs(contentButtons) do obj:Destroy() end
+    contentButtons = {}
+
+    -- Asegurar estados
+    states[tabName] = states[tabName] or {}
+
+    local yOffset = 10
+
+    if tabName == "Creditos" then
+        local creditText = [[
+Creador del Script, username: Demon_misteriousX
+
+ESTE SCRITP LE PERTENECE A EL MEJOR CLAN DEL JUEGO EL DTH LOS
+PAPAS DEL NTX, SOMOS LOS MEJORES DEL JUEGO Y NO TENEMOS
+RIVALES, CAEMOS PERO NO NOS RENDIMOS
+
+ATTE: ZEUZ, FERCHO Y KAZE
+        ]]
+        local label = Instance.new("TextLabel")
+        label.Size             = UDim2.new(1, -20, 1, -20)
+        label.Position         = UDim2.new(0, 10, 0, 10)
+        label.BackgroundTransparency = 1
+        label.Text             = creditText
+        label.TextColor3       = Color3.fromRGB(200, 200, 200)
+        label.Font             = Enum.Font.Gotham
+        label.TextSize         = 14
+        label.TextWrapped      = true
+        label.TextXAlignment   = Enum.TextXAlignment.Left
+        label.TextYAlignment   = Enum.TextYAlignment.Top
+        label.Parent           = ContentPanel
+        table.insert(contentButtons, label)
+
+    elseif tabName == "Teleports" then
+        -- Crear botones de teleport en la pestaña Teleports
+        for _, name in ipairs(contentByTab[tabName] or {}) do
+            local container = Instance.new("Frame")
+            container.Size             = UDim2.new(0, 220, 0, 30)
+            container.Position         = UDim2.new(0, 10, 0, yOffset)
+            container.BackgroundTransparency = 1
+            container.Parent           = ContentPanel
+
+            -- Crear el botón de teleport
+            local teleportButton = Instance.new("TextButton")
+            teleportButton.Size             = UDim2.new(1, 0, 0, 30)  -- Tamaño completo del contenedor
+            teleportButton.Position         = UDim2.new(0, 0, 0, 0)
+            teleportButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Fondo azul para el botón
+            teleportButton.Text             = name
+            teleportButton.TextColor3       = Color3.fromRGB(255, 255, 255)
+            teleportButton.Font             = Enum.Font.GothamBold
+            teleportButton.TextSize         = 14
+            teleportButton.TextXAlignment   = Enum.TextXAlignment.Center
+            teleportButton.TextYAlignment   = Enum.TextYAlignment.Center
+            teleportButton.Parent           = container
+
+            -- Acción al hacer clic en el botón (reemplaza con la lógica de teleportación real)
+            teleportButton.MouseButton1Click:Connect(function()
+                print("Teleportando a:", name)  -- Aquí puedes agregar la lógica para teleportar
+            end)
+
+            table.insert(contentButtons, container)
+            yOffset = yOffset + 35  -- Ajustar la posición para el siguiente botón
+        end
+    else
+        for _, name in ipairs(contentByTab[tabName] or {}) do
+            local container = Instance.new("Frame")
+            container.Size             = UDim2.new(0, 220, 0, 30)
+            container.Position         = UDim2.new(0, 10, 0, yOffset)
+            container.BackgroundTransparency = 1
+            container.Parent           = ContentPanel
+
+            local box = Instance.new("TextButton")
+            box.Size             = UDim2.new(0, 20, 0, 20)
+            box.Position         = UDim2.new(0, 0, 0.5, -10)
+            box.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            box.Font             = Enum.Font.GothamBold
+            box.TextSize         = 14
+            box.TextXAlignment   = Enum.TextXAlignment.Center
+            box.TextYAlignment   = Enum.TextYAlignment.Center
+            box.Parent           = container
+
+            local toggled = states[tabName][name] or false
+            box.Text = toggled and "✓" or "X"
+
+            local label = Instance.new("TextLabel")
+            label.Size             = UDim2.new(1, -30, 1, 0)
+            label.Position         = UDim2.new(0, 30, 0, 0)
+            label.BackgroundTransparency = 1
+            label.Text             = name
+            label.TextColor3       = Color3.fromRGB(200, 200, 200)
+            label.Font             = Enum.Font.Gotham
+            label.TextSize         = 14
+            label.TextXAlignment   = Enum.TextXAlignment.Left
+            label.Parent           = container
+
+            box.MouseButton1Click:Connect(function()
+                toggled = not toggled
+                states[tabName][name] = toggled
+                box.Text = toggled and "✓" or "X"
+                print("Clic en:", name, "=>", toggled and "ON" or "OFF")
+            end)
+
+            table.insert(contentButtons, container)
+            yOffset = yOffset + 35
+        end
+    end
 end
 
+-- Crear botones de pestaña con datos de animación precomputados
+do
+    local xOffset = 0
+    local numTabs = #tabs
+    local tabWidth = 1 / numTabs  -- Ajusta el tamaño de las pestañas para que encajen dentro del panel
+    for _, name in ipairs(tabs) do
+        local btn = Instance.new("TextButton")
+        btn.Size             = UDim2.new(tabWidth, 0, 0, 30)  -- Cada botón de pestaña ocupa una fracción del panel
+        btn.Position         = UDim2.new(xOffset, 0, 0, 0)
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        btn.Text             = name
+        btn.TextColor3       = Color3.fromRGB(255, 255, 255)
+        btn.Font             = Enum.Font.Gotham
+        btn.TextSize         = 14
+        btn.Parent           = TabPanel
 
--- Panel adicional para contador personal en Stats
-local personalStatsPanel = Instance.new("Frame")
-personalStatsPanel.Size = UDim2.new(0, 195, 0, 100)
-personalStatsPanel.Position = UDim2.new(0, 10, 0, 40 + (#(contentByTab["Stats"]) * 28))
-personalStatsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-personalStatsPanel.BackgroundTransparency = 0.2
-personalStatsPanel.Visible = false
-personalStatsPanel.Parent = ContentPanel
+        -- Guardar info de animación
+        local origSize, origPos = btn.Size, btn.Position
+        local pressSize = UDim2.new(origSize.X.Scale, origSize.X.Offset, origSize.Y.Scale, origSize.Y.Offset - 2)
+        local pressPos  = UDim2.new(origPos.X.Scale,  origPos.X.Offset,  origPos.Y.Scale,  origPos.Y.Offset + 2)
 
-local tiempoLabel = Instance.new("TextLabel")
-tiempoLabel.Size = UDim2.new(1, -10, 0, 20)
-tiempoLabel.Position = UDim2.new(0, 5, 0, 5)
-tiempoLabel.BackgroundTransparency = 1
-tiempoLabel.TextColor3 = Color3.new(1, 1, 1)
-tiempoLabel.Font = Enum.Font.SourceSansBold
-tiempoLabel.TextSize = 16
-tiempoLabel.TextXAlignment = Enum.TextXAlignment.Left
-tiempoLabel.Parent = personalStatsPanel
+        tabButtons[name] = {
+            btn  = btn,
+            info = { origSize = origSize, origPos = origPos, pressedSize = pressSize, pressedPos = pressPos }
+        }
 
-local fuerzaLabel = tiempoLabel:Clone()
-fuerzaLabel.Position = UDim2.new(0, 5, 0, 28)
-fuerzaLabel.Parent = personalStatsPanel
+        -- Click para cambiar pestaña
+        btn.MouseButton1Click:Connect(function()
+            switchTab(name)
+        end)
 
-local durabilidadLabel = tiempoLabel:Clone()
-durabilidadLabel.Position = UDim2.new(0, 5, 0, 51)
-durabilidadLabel.Parent = personalStatsPanel
-
-local renacimientosLabel = tiempoLabel:Clone()
-renacimientosLabel.Position = UDim2.new(0, 5, 0, 74)
-renacimientosLabel.Parent = personalStatsPanel
-
-local player = game:GetService("Players").LocalPlayer
-local RunService = game:GetService("RunService")
-
-local function getStat(name)
-	local stats = player:FindFirstChild("leaderstats") or player:FindFirstChild("PlayerStats")
-	local stat = stats and stats:FindFirstChild(name)
-	return stat or player:FindFirstChild(name)
+        xOffset = xOffset + tabWidth  -- Desplazar la siguiente pestaña
+    end
 end
 
-local strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
-while not (strengthStat and durabilityStat and rebirthStat) do
-	RunService.RenderStepped:Wait()
-	strengthStat, durabilityStat, rebirthStat = getStat("Strength"), getStat("Durability"), getStat("Rebirths")
-end
+-- Inicializar primera pestaña activa
+switchTab(tabs[1])
 
-local startTime = tick()
-local startStrength = strengthStat.Value
-local startDurability = durabilityStat.Value
-local startRebirths = rebirthStat.Value
-
-RunService.RenderStepped:Connect(function()
-	if not personalStatsPanel.Visible then return end
-
-	local now = tick()
-	local elapsed = now - startTime
-	local h = math.floor(elapsed / 3600)
-	local m = math.floor((elapsed % 3600) / 60)
-	local s = math.floor(elapsed % 60)
-
-	local fuerza = strengthStat.Value - startStrength
-	local dura = durabilityStat.Value - startDurability
-	local rebirths = rebirthStat.Value - startRebirths
-
-	tiempoLabel.Text = string.format("Tiempo: %02d:%02d:%02d", h, m, s)
-	fuerzaLabel.Text = "Fuerza ganada: " .. abreviarNumero(fuerza)
-	durabilidadLabel.Text = "Durabilidad ganada: " .. abreviarNumero(dura)
-	renacimientosLabel.Text = "Renacimientos ganados: " .. tostring(rebirths)
-end)
-
--- Mostrar solo si estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡s en pestaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a "Stats"
-local originalSwitchTab = switchTab
-switchTab = function(tabName)
-	originalSwitchTab(tabName)
-	personalStatsPanel.Visible = (tabName == "Stats")
-end
--- Activar primera pestaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a
-switchTab(lastTab)
--- Minimizar estilo con tamaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬ ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±o y ocultar contenido
-local fullHeight = 400
-local minimizedHeight = 25
-local isMinimized = false
-
+-- Minimizar / Restaurar lógica
 MinButton.MouseButton1Click:Connect(function()
-    isMinimized = not isMinimized
-    MinButton.Text = isMinimized and "+" or "-"
-    MainFrame.Size = UDim2.new(0, 700, 0, isMinimized and minimizedHeight or fullHeight)
-    TabPanel.Visible = not isMinimized
-    ContentPanel.Visible = not isMinimized
-    statsPanel.Visible = not isMinimized and (currentTab == "Stats" or buttonStates["Stats_Check Stats"])
+    MainFrame.Visible     = false
+    RestoreButton.Visible = true
+end)
+RestoreButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible     = true
+    RestoreButton.Visible = false
 end)
