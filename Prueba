@@ -2030,10 +2030,13 @@ do -- Example UI
         can_resize = false,
     }
 
-	local Window = library:AddWindow("Does it work?", WindowOptions)
-	local AimbotTab = Window:AddTab("Aimbot")
-	local VisualTab = Window:AddTab("Visual")
-	local MiscTab = Window:AddTab("Miscellaneous")
+	local Window = library:AddWindow("Pheonix Hub V2", WindowOptions)
+	local AimbotTab = Window:AddTab("MainOP")
+	local VisualTab = Window:AddTab("Stats")
+	local MiscTab = Window:AddTab("Kill")
+	local VisualTab = Window:AddTab("TP")
+	local VisualTab = Window:AddTab("Calculadora")
+	local VisualTab = Window:AddTab("Creditos")
 
     do -- Elements
         do -- Aimbot Tab Content
