@@ -2042,7 +2042,9 @@ do -- Example UI
             local AFM = AimbotTab:AddFolder("Solo Packs")
 
             AFM:AddLabel("Enabled")
-            local AFM_ignorewalls = AFM:AddSwitch("Whether to the aimbot is enabled or not.", function(bool)
+            local AFM_ignorewalls = AFM:AddSwitch("Auto Fuerza OP", function(bool)
+
+            local AFM_ignorewalls = AFM:AddSwitch("Fast Rebith", function(bool)
                 
             end)
 
