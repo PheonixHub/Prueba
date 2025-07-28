@@ -2034,11 +2034,12 @@ do -- Example UI
 	local AimbotTab = Window:AddTab("MainOP")
 	local VisualTab = Window:AddTab("Stats")
 	local MiscTab = Window:AddTab("Kill")
-   local VisualTab = Window:AddTab("TP")
-   local VisualTab = Window:AddTab("Creditos")
+        local VisualTab = Window:AddTab("TP")
+        local VisualTab = Window:AddTab("Calculadora")
+        local VisualTab = Window:AddTab("Creditos")
     do -- Elements
         do -- Aimbot Tab Content
-            local AFM = AimbotTab:AddFolder("Aimbot")
+            local AFM = AimbotTab:AddFolder("Solo Packs")
 
             AFM:AddLabel("Enabled")
             local AFM_ignorewalls = AFM:AddSwitch("Whether to the aimbot is enabled or not.", function(bool)
