@@ -1,3 +1,9 @@
+--[[
+	ui-engine-v2
+	version 1.3a
+	by Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)
+--]]
+
 local ui_options = {
 	main_color = Color3.fromRGB(41, 74, 122),
 	min_size = Vector2.new(400, 300),
@@ -179,7 +185,7 @@ Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0, 30, 0, 3)
 Title.Size = UDim2.new(0, 200, 0, 20)
 Title.Font = Enum.Font.GothamBold
-Title.Text = "Pheonix Hub V2"
+Title.Text = "Gamer Time"
 Title.TextColor3 = Color3.new(1, 1, 1)
 Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
@@ -2028,20 +2034,13 @@ do -- Example UI
 	local AimbotTab = Window:AddTab("MainOP")
 	local VisualTab = Window:AddTab("Stats")
 	local MiscTab = Window:AddTab("Kill")
-	local VisualTab = Window:AddTab("TP")
-	local VisualTab = Window:AddTab("Calculadora")
-	local VisualTab = Window:AddTab("Creditos")
-
+   local VisualTab = Window:AddTab("TP")
+   local VisualTab = Window:AddTab("Creditos")
     do -- Elements
         do -- Aimbot Tab Content
-            local AFM = AimbotTab:AddFolder("Solo packs")
+            local AFM = AimbotTab:AddFolder("Aimbot")
 
-            AFM:AddLabel("Auto Fuerza OP")
-            local AFM_ignorewalls = AFM:AddSwitch("Whether to the aimbot is enabled or not.", function(bool)
-
-            end)
-
-            AFM:AddLabel("Renacer Con packs")
+            AFM:AddLabel("Enabled")
             local AFM_ignorewalls = AFM:AddSwitch("Whether to the aimbot is enabled or not.", function(bool)
                 
             end)
