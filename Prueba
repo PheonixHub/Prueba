@@ -2039,9 +2039,10 @@ do -- Example UI
             AFM:AddLabel("Auto Fuerza OP")
             local AFM_ignorewalls = AFM:AddSwitch("Whether to the aimbot is enabled or not.", function(bool)
 
+            end)
+
             AFM:AddLabel("Renacer Con packs")
             local AFM_ignorewalls = AFM:AddSwitch("Whether to the aimbot is enabled or not.", function(bool)
-                
                 
             end)
 
